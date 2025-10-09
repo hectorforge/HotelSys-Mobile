@@ -1,0 +1,52 @@
+-----> Guía de organización de vistas y fragments
+
+En esta carpeta **solo deben ir los *Fragments***, **no las *Activities***.
+Las *Activities* deben utilizarse únicamente como **contenedores o envoltorios de varios *Fragments***, por ejemplo:
+
+* `MainActivity` → vista principal que agrupa varios módulos.
+* `AuthActivity` → contenedor para las pantallas del flujo de autenticación.
+
+Además, se recomienda **organizar los *Fragments* por módulo** para mantener la lógica separada y el proyecto ordenado.
+Por ejemplo:
+
+* `/auth` → *Fragments* relacionados con autenticación (login, registro, recuperación de contraseña, etc.)
+* `/rooms` → *Fragments* relacionados con habitaciones o gestión de espacios.
+* `/profile` → *Fragments* relacionados con el usuario y su perfil.
+
+-----> En resumen:
+
+* Solo *Fragments* en esta carpeta.
+* *Activities* únicamente como contenedores de varios *Fragments*.
+* Separar los *Fragments* en subcarpetas por módulo o funcionalidad.
+
+---
+
+
+----------- INFO PARA EL PAQUETE NAVIGATION ( no me dejaba poner un archivo plano solo .xml )
+
+---> Explicacion:
+Como trabajaremos principalmente con Fragments, utilizaremos gráficos de navegación
+(Navigation Graphs) para gestionar el flujo entre vistas. De esta forma, nos enfocamos únicamente
+en la lógica y en las interfaces de usuario, sin preocuparnos por abrir o cerrar manualmente cada
+vista ni por manejar transacciones de Fragments de forma directa.
+
+Cada módulo o flujo principal de la aplicación puede tener su propio archivo de navegación,
+lo que facilita mantener el proyecto organizado y modular.
+
+res/
+ └── navigation/
+      ├── nav_auth.xml        // Árbol de navegación para el flujo de autenticación (login, registro, etc.)
+      ├── nav_main.xml        // Árbol de navegación principal (home, dashboard, perfil, etc.)
+      └── nav_rooms.xml       // Árbol de navegación para la gestión de habitaciones o espacios
+
+---> Recomendaciones:
+
+Cada archivo XML debe representar un flujo independiente dentro de la app.
+
+Evitar definir demasiados destinos en un solo archivo; mantenerlos organizados por funcionalidad.
+
+Usar acciones (<action>) para definir las transiciones entre Fragments.
+
+Tambien facilitaran el proceso de paso de argumentos entre fragments
+
+Mantener la consistencia en los IDs de los destinos para facilitar la referencia desde el código Kotlin o XML.
