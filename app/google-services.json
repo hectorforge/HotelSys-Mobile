@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "501440997555",
-    "project_id": "hotelsys-5bde2",
-    "storage_bucket": "hotelsys-5bde2.firebasestorage.app"
+    "project_number": "187936583397",
+    "project_id": "hotelsys-caca7",
+    "storage_bucket": "hotelsys-caca7.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:501440997555:android:32dc7d2ea98618cf0128c6",
+        "mobilesdk_app_id": "1:187936583397:android:b25f1e55e42d95a8a52e0c",
         "android_client_info": {
           "package_name": "com.app.hotelsys"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyB8N8Z8dgVKortOvsCXaLB8oVPqKSSzm44"
+          "current_key": "AIzaSyCgFjcMFLofNGzxanegv--2ZLYDnEYwpoA"
         }
       ],
       "services": {
