@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1E3C72"
+    tools:context=".MainActivity">
+
+    <View
+        android:id="@+id/backgroundGradient"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_gradient" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="24dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="10dp"
+                app:cardCornerRadius="28dp"
+                app:cardUseCompatPadding="true"
+                android:layout_margin="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+
+                    <ImageView
+                        android:id="@+id/imageLogo"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/bg_photo_login"
+                        android:contentDescription="Logo" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="24dp">
+
+                        <TextView
+                            android:id="@+id/textTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Bienvenido"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:textColor="#1E3C72"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="20dp" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:startIconDrawable="@drawable/ic_mail"
+                            android:hint="Correo electrónico">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/editTextEmail"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="textEmailAddress" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:startIconDrawable="@drawable/ic_password"
+                            app:endIconMode="password_toggle"
+                            android:hint="Contraseña"
+                            android:layout_marginTop="16dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/editTextPassword"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="textPassword" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/buttonLogin"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Ingresar"
+                            android:textAllCaps="false"
+                            android:textStyle="bold"
+                            android:layout_marginTop="24dp"
+                            android:backgroundTint="#1E3C72"
+                            android:textColor="@android:color/white"
+                            app:cornerRadius="16dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/buttonCancel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Cancelar"
+                            android:textAllCaps="false"
+                            style="?attr/materialButtonOutlinedStyle"
+                            android:layout_marginTop="12dp"
+                            android:textColor="#1E3C72"
+                            app:strokeColor="#1E3C72"
+                            app:cornerRadius="16dp" />
+
+                        <TextView
+                            android:id="@+id/textRegister"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="¿No tienes cuenta? Regístrate"
+                            android:textColor="#1E3C72"
+                            android:textStyle="bold"
+                            android:layout_marginTop="18dp"
+                            android:layout_gravity="center_horizontal" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
