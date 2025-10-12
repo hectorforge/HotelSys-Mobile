@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CustomPopupMenu" parent="Widget.MaterialComponents.PopupMenu">
+        <item name="android:popupBackground">@color/hotel_azul</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+</resources>

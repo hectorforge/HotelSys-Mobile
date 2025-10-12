@@ -2,4 +2,6 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="azul_celeste">#3A9BDC</color>
+    <color name="hotel_azul">#1E3C72</color>
 </resources>
