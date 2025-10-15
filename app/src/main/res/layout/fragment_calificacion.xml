@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -13,9 +12,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="4dp"
         android:textAppearance="?attr/textAppearanceHeadline6"
-        tools:text="Calificar Habitación 101" />
+        tools:text="Reseñas y Calificaciones" />
+
+    <TextView
+        android:id="@+id/textViewNombreHabitacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:textAppearance="?attr/textAppearanceSubtitle1"
+        tools:text="Suite Ejecutiva"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Tu calificación"
+        android:textAppearance="?attr/textAppearanceLabelLarge"/>
 
     <RatingBar
         android:id="@+id/ratingBar"
@@ -26,10 +41,12 @@
         android:stepSize="0.5" />
 
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:layout_marginTop="16dp"
-        android:hint="Escribe tu comentario (opcional)">
+        android:hint="Comparte tu experiencia...">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextComentario"
@@ -37,14 +54,29 @@
             android:layout_height="wrap_content"
             android:minLines="3"
             android:gravity="top"/>
-
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/buttonEnviarCalificacion"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Enviar Reseña" />
+        android:orientation="horizontal"
+        android:layout_marginTop="24dp">
 
+        <Button
+            android:id="@+id/buttonCancelar"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="Cancelar" />
+
+        <Button
+            android:id="@+id/buttonEnviarCalificacion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Enviar" />
+    </LinearLayout>
 </LinearLayout>

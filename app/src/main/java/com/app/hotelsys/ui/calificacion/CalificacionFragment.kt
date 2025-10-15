@@ -61,6 +61,17 @@ class CalificacionFragment : BottomSheetDialogFragment() {
         binding.buttonEnviarCalificacion.setOnClickListener {
             enviarCalificacion()
         }
+
+        binding.textViewTituloCalificacion.text = "Reseñas y Calificaciones"
+        binding.textViewNombreHabitacion.text = habitacionNumero
+
+        binding.buttonEnviarCalificacion.setOnClickListener {
+            enviarCalificacion()
+        }
+
+        binding.buttonCancelar.setOnClickListener {
+            dismiss() // Simplemente cierra el panel
+        }
     }
 
     private fun enviarCalificacion() {

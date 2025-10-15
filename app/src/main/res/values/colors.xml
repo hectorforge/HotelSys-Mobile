@@ -2,4 +2,10 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Colores de la marca HotelSys -->
+    <color name="hotelsys_primary">#3F51B5</color> <!-- Un azul índigo profesional -->
+    <color name="hotelsys_primary_dark">#303F9F</color>
+    <color name="hotelsys_accent">#FF4081</color> <!-- Un acento para contraste -->
+    <color name="hotelsys_background">#F5F5F5</color> <!-- Un gris muy claro para fondos -->
 </resources>

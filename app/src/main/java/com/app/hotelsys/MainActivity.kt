@@ -14,6 +14,7 @@ import com.app.hotelsys.models.TipoHabitacionCalificar
 import com.app.hotelsys.ui.auth.AuthActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.app.hotelsys.ui.calificacion.CalificacionFragment
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,6 +40,14 @@ class MainActivity : AppCompatActivity() {
 
         // 3. Cargar los datos (por ahora, de prueba)
         loadDummyData()
+
+        // 4. Lógica para el botón de logout
+        val fabLogout: FloatingActionButton = findViewById(R.id.fabLogout)
+        fabLogout.setOnClickListener {
+            auth.signOut()
+            startActivity(Intent(this, AuthActivity::class.java))
+            finish()
+        }
     }
 
     private fun setupRecyclerView() {
