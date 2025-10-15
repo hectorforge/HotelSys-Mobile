@@ -61,8 +61,13 @@ class MainActivity : AppCompatActivity() {
         val habitacionesDePrueba = createDummyHabitaciones()
 
         habitacionAdapter = HabitacionAdapter(habitacionesDePrueba) { habitacion ->
-            // Lógica para abrir el BottomSheet
-            val calificacionFragment = CalificacionFragment.newInstance(habitacion.id, habitacion.numero)
+            val imageUrl = if (habitacion.imagenes.isNotEmpty()) habitacion.imagenes[0].url else ""
+            val calificacionFragment = CalificacionFragment.newInstance(
+                habitacion.id,
+                habitacion.numero,
+                habitacion.tipoHabitacion.descripcion,
+                imageUrl
+            )
             calificacionFragment.show(supportFragmentManager, "CalificacionFragment")
         }
 

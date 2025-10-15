@@ -6,11 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.app.hotelsys.adapters.ResenaAdapter
 import com.app.hotelsys.databinding.FragmentCalificacionBinding
+import com.app.hotelsys.models.Resena
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
+import java.util.Date
 
 class CalificacionFragment : BottomSheetDialogFragment() {
 
@@ -19,16 +24,19 @@ class CalificacionFragment : BottomSheetDialogFragment() {
 
     private var habitacionId: Int = 0
     private var habitacionNumero: String = ""
+    private var habitacionTipo: String = ""
+    private var habitacionImagenUrl: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             habitacionId = it.getInt(ARG_HABITACION_ID)
             habitacionNumero = it.getString(ARG_HABITACION_NUMERO) ?: ""
+            habitacionTipo = it.getString(ARG_HABITACION_TIPO) ?: ""
+            habitacionImagenUrl = it.getString(ARG_HABITACION_IMAGEN_URL) ?: ""
         }
     }
 
-    // Esta función asegura que el BottomSheet se expanda completamente y el teclado funcione bien
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
         dialog.setOnShowListener {
@@ -36,7 +44,7 @@ class CalificacionFragment : BottomSheetDialogFragment() {
             if (bottomSheet != null) {
                 val behavior = BottomSheetBehavior.from(bottomSheet)
                 behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                behavior.skipCollapsed = true // Evita que se pueda colapsar a la mitad
+                behavior.skipCollapsed = true
             }
         }
         return dialog
@@ -53,43 +61,54 @@ class CalificacionFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.textViewTituloCalificacion.text = "Calificar Habitación $habitacionNumero"
+        setupHeader()
+        setupForm()
+        setupResenasList()
+    }
 
-        // Poner el foco en el RatingBar al iniciar para una mejor UX
-        binding.ratingBar.requestFocus()
+    private fun setupHeader() {
+        binding.textViewNombreHabitacionResena.text = "$habitacionTipo N° $habitacionNumero"
+        Glide.with(this).load(habitacionImagenUrl).centerCrop().into(binding.imageViewHabitacionResena)
 
-        binding.buttonEnviarCalificacion.setOnClickListener {
-            enviarCalificacion()
-        }
+        binding.ratingBarPromedio.rating = 4.8f
+        binding.textViewPromedio.text = "4.8"
+        binding.textViewTotalResenas.text = "(124 reseñas)"
+    }
 
-        binding.textViewTituloCalificacion.text = "Reseñas y Calificaciones"
-        binding.textViewNombreHabitacion.text = habitacionNumero
+    private fun setupForm() {
+        binding.buttonEnviarCalificacion.setOnClickListener { enviarCalificacion() }
+        binding.buttonCancelar.setOnClickListener { dismiss() }
+    }
 
-        binding.buttonEnviarCalificacion.setOnClickListener {
-            enviarCalificacion()
-        }
-
-        binding.buttonCancelar.setOnClickListener {
-            dismiss() // Simplemente cierra el panel
-        }
+    private fun setupResenasList() {
+        val dummyResenas = listOf(
+            Resena("María González", 5f, "Excelente habitación, muy limpia y cómoda.", Date()),
+            Resena("Carlos Ruiz", 3.5f, "Muy buena ubicación y amenidades.", Date(System.currentTimeMillis() - 86400000 * 7))
+        )
+        binding.recyclerViewResenas.layoutManager = LinearLayoutManager(context)
+        binding.recyclerViewResenas.adapter = ResenaAdapter(dummyResenas)
     }
 
     private fun enviarCalificacion() {
-        // Ocultar el teclado para evitar problemas visuales al mostrar errores
         val inputMethodManager = requireActivity().getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
 
-        val calificacion = binding.ratingBar.rating
+        val calificacion = binding.ratingBarCalificacion.rating
+        val nombre = binding.editTextNombreUsuario.text.toString().trim()
         val comentario = binding.editTextComentario.text.toString().trim()
 
         if (calificacion == 0f) {
             Snackbar.make(binding.root, "Por favor, selecciona al menos media estrella", Snackbar.LENGTH_SHORT).show()
             return
         }
+        if (nombre.isEmpty()) {
+            binding.inputLayoutNombreUsuario.error = "Tu nombre es requerido"
+            return
+        } else {
+            binding.inputLayoutNombreUsuario.error = null
+        }
 
-        // TODO: Lógica para guardar en Firebase
-
-        Toast.makeText(context, "Gracias por tu reseña!", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "Gracias por tu reseña, $nombre!", Toast.LENGTH_LONG).show()
         dismiss()
     }
 
@@ -101,12 +120,16 @@ class CalificacionFragment : BottomSheetDialogFragment() {
     companion object {
         private const val ARG_HABITACION_ID = "habitacion_id"
         private const val ARG_HABITACION_NUMERO = "habitacion_numero"
+        private const val ARG_HABITACION_TIPO = "habitacion_tipo"
+        private const val ARG_HABITACION_IMAGEN_URL = "habitacion_imagen_url"
 
-        fun newInstance(habitacionId: Int, habitacionNumero: String) =
+        fun newInstance(habitacionId: Int, habitacionNumero: String, habitacionTipo: String, habitacionImagenUrl: String) =
             CalificacionFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_HABITACION_ID, habitacionId)
                     putString(ARG_HABITACION_NUMERO, habitacionNumero)
+                    putString(ARG_HABITACION_TIPO, habitacionTipo)
+                    putString(ARG_HABITACION_IMAGEN_URL, habitacionImagenUrl)
                 }
             }
     }
