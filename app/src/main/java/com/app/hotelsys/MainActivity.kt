@@ -13,6 +13,7 @@ import com.app.hotelsys.models.ImagenHabitacionCalificar
 import com.app.hotelsys.models.TipoHabitacionCalificar
 import com.app.hotelsys.ui.auth.AuthActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.app.hotelsys.ui.calificacion.CalificacionFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -50,18 +51,17 @@ class MainActivity : AppCompatActivity() {
     private fun loadDummyData() {
         val habitacionesDePrueba = createDummyHabitaciones()
 
-        // Crear una instancia del Adapter, pasándole los datos y la lógica del clic
         habitacionAdapter = HabitacionAdapter(habitacionesDePrueba) { habitacion ->
-            // Esta es la acción que se ejecuta cuando se hace clic en "Calificar"
-            Toast.makeText(this, "Calificar habitación: ${habitacion.numero}", Toast.LENGTH_SHORT).show()
+            // Lógica para abrir el BottomSheet
+            val calificacionFragment = CalificacionFragment.newInstance(habitacion.id, habitacion.numero)
+            calificacionFragment.show(supportFragmentManager, "CalificacionFragment")
         }
 
-        // ¡EL PASO QUE FALTABA! Asignar el adapter al RecyclerView
         recyclerView.adapter = habitacionAdapter
     }
 
     private fun createDummyHabitaciones(): List<HabitacionCalificar> {
-        // Datos de prueba con URLs HTTPS para máxima compatibilidad
+        // Datos de prueba con URLs HTTPS
         return listOf(
             HabitacionCalificar(
                 id = 1,
