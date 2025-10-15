@@ -2,70 +2,88 @@ package com.app.hotelsys
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.app.hotelsys.models.Usuario
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.app.hotelsys.adapters.HabitacionAdapter
+import com.app.hotelsys.models.EstadoHabitacionCalificar
+import com.app.hotelsys.models.HabitacionCalificar
+import com.app.hotelsys.models.ImagenHabitacionCalificar
+import com.app.hotelsys.models.TipoHabitacionCalificar
 import com.app.hotelsys.ui.auth.AuthActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
-    private lateinit var db: FirebaseFirestore
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var habitacionAdapter: HabitacionAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         auth = FirebaseAuth.getInstance()
-        db = FirebaseFirestore.getInstance()
 
-        // Si no hay usuario logeado, redirigir al AuthActivity
-        val user = auth.currentUser
-        if (user == null) {
+        // 1. Verificar si el usuario está logueado
+        if (auth.currentUser == null) {
             startActivity(Intent(this, AuthActivity::class.java))
             finish()
-            return
+            return // Importante: Salir del onCreate si no hay usuario
         }
 
-        // Referencias UI
-        val txtBienvenida = findViewById<TextView>(R.id.txtBienvenida)
-        val txtNombre = findViewById<TextView>(R.id.txtNombre)
-        val txtApellido = findViewById<TextView>(R.id.txtApellido)
-        val txtFechaNacimiento = findViewById<TextView>(R.id.txtFechaNacimiento)
-        val txtEmail = findViewById<TextView>(R.id.txtEmail)
-        val txtFechaRegistro = findViewById<TextView>(R.id.txtFechaRegistro)
-        val btnLogout = findViewById<Button>(R.id.btnLogout)
+        // 2. Configurar el RecyclerView
+        setupRecyclerView()
 
-        // Obtener datos del usuario desde Firestore
-        val uid = user.uid
-        db.collection("usuarios").document(uid).get()
-            .addOnSuccessListener { document ->
-                if (document != null && document.exists()) {
-                    val usuario = document.toObject(Usuario::class.java)
-                    if (usuario != null) {
-                        txtBienvenida.text = "¡Bienvenido, ${usuario.nombre}!"
-                        txtNombre.text = "Nombre: ${usuario.nombre}"
-                        txtApellido.text = "Apellido: ${usuario.apellido}"
-                        txtFechaNacimiento.text = "Fecha de nacimiento: ${usuario.fechaNacimiento}"
-                        txtEmail.text = "Correo: ${usuario.email}"
-                        txtFechaRegistro.text = "Fecha de registro: ${usuario.fechaRegistro}"
-                    }
-                } else {
-                    txtBienvenida.text = "No se encontraron tus datos."
-                }
-            }
-            .addOnFailureListener {
-                txtBienvenida.text = "Error al obtener los datos del usuario."
-            }
+        // 3. Cargar los datos (por ahora, de prueba)
+        loadDummyData()
+    }
 
-        // Botón cerrar sesión
-        btnLogout.setOnClickListener {
-            auth.signOut()
-            startActivity(Intent(this, AuthActivity::class.java))
-            finish()
+    private fun setupRecyclerView() {
+        // Enlazar la variable del RecyclerView con el componente del layout
+        recyclerView = findViewById(R.id.recyclerViewHabitaciones)
+        // Decirle al RecyclerView que muestre los ítems en una lista vertical
+        recyclerView.layoutManager = LinearLayoutManager(this)
+    }
+
+    private fun loadDummyData() {
+        val habitacionesDePrueba = createDummyHabitaciones()
+
+        // Crear una instancia del Adapter, pasándole los datos y la lógica del clic
+        habitacionAdapter = HabitacionAdapter(habitacionesDePrueba) { habitacion ->
+            // Esta es la acción que se ejecuta cuando se hace clic en "Calificar"
+            Toast.makeText(this, "Calificar habitación: ${habitacion.numero}", Toast.LENGTH_SHORT).show()
         }
+
+        // ¡EL PASO QUE FALTABA! Asignar el adapter al RecyclerView
+        recyclerView.adapter = habitacionAdapter
+    }
+
+    private fun createDummyHabitaciones(): List<HabitacionCalificar> {
+        // Datos de prueba con URLs HTTPS para máxima compatibilidad
+        return listOf(
+            HabitacionCalificar(
+                id = 1,
+                numero = "101",
+                tipoHabitacion = TipoHabitacionCalificar(1, "Simple", 100.0),
+                estadoHabitacion = EstadoHabitacionCalificar(1, "Disponible"),
+                imagenes = listOf(ImagenHabitacionCalificar(1, "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=2070&auto=format&fit=crop", "Vista 101", ""))
+            ),
+            HabitacionCalificar(
+                id = 3,
+                numero = "201",
+                tipoHabitacion = TipoHabitacionCalificar(2, "Doble", 180.0),
+                estadoHabitacion = EstadoHabitacionCalificar(1, "Disponible"),
+                imagenes = listOf(ImagenHabitacionCalificar(2, "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=2070&auto=format&fit=crop", "Vista 201", ""))
+            ),
+            HabitacionCalificar(
+                id = 5,
+                numero = "301",
+                tipoHabitacion = TipoHabitacionCalificar(3, "Matrimonial", 220.0),
+                estadoHabitacion = EstadoHabitacionCalificar(2, "Ocupada"),
+                imagenes = listOf(ImagenHabitacionCalificar(3, "https://images.unsplash.com/photo-1566665797739-1674de7a421a?q=80&w=1974&auto=format&fit=crop", "Vista 301", ""))
+            )
+        )
     }
 }
