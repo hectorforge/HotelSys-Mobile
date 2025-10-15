@@ -1,20 +1,21 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Tema base de la aplicación -->
     <style name="Base.Theme.HotelSys" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Colores primarios de la marca -->
-        <item name="colorPrimary">@color/hotelsys_primary</item>
-        <item name="colorPrimaryVariant">@color/hotelsys_primary_dark</item>
+
+        <!-- Asignación de colores de la marca al tema -->
+        <item name="colorPrimary">@color/hotelsys_azul_marca</item>
+        <item name="colorPrimaryVariant">@color/hotelsys_azul_oscuro</item>
         <item name="colorOnPrimary">@color/white</item>
 
-        <!-- Colores secundarios -->
-        <item name="colorSecondary">@color/hotelsys_accent</item>
-        <item name="colorSecondaryVariant">@color/hotelsys_accent</item>
+        <item name="colorSecondary">@color/hotelsys_acento_cyan</item>
+        <item name="colorSecondaryVariant">@color/hotelsys_acento_cyan</item>
         <item name="colorOnSecondary">@color/black</item>
 
-        <!-- Color de fondo de la aplicación -->
-        <item name="android:colorBackground">@color/hotelsys_background</item>
+        <item name="android:colorBackground">@color/hotelsys_fondo</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/hotelsys_texto_principal</item>
 
-        <!-- Status bar color. -->
+        <!-- Color de la barra de estado -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
     </style>
 

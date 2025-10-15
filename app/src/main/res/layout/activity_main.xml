@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/hotelsys_background"
+    android:background="@color/hotelsys_fondo"
     tools:context=".MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
