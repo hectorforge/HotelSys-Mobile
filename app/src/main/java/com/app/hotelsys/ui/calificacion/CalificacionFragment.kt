@@ -16,6 +16,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import java.util.Date
+import com.google.firebase.auth.FirebaseAuth
 
 class CalificacionFragment : BottomSheetDialogFragment() {
 
@@ -26,6 +27,8 @@ class CalificacionFragment : BottomSheetDialogFragment() {
     private var habitacionNumero: String = ""
     private var habitacionTipo: String = ""
     private var habitacionImagenUrl: String = ""
+
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +64,8 @@ class CalificacionFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        auth = FirebaseAuth.getInstance() // Inicializa FirebaseAuth
+
         setupHeader()
         setupForm()
         setupResenasList()
@@ -76,6 +81,11 @@ class CalificacionFragment : BottomSheetDialogFragment() {
     }
 
     private fun setupForm() {
+        // Rellenamos el nombre del usuario y lo deshabilitamos
+        val nombreUsuarioActual = auth.currentUser?.displayName ?: "Usuario Anónimo"
+        binding.editTextNombreUsuario.setText(nombreUsuarioActual)
+        binding.inputLayoutNombreUsuario.isEnabled = false
+
         binding.buttonEnviarCalificacion.setOnClickListener { enviarCalificacion() }
         binding.buttonCancelar.setOnClickListener { dismiss() }
     }
@@ -94,18 +104,12 @@ class CalificacionFragment : BottomSheetDialogFragment() {
         inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
 
         val calificacion = binding.ratingBarCalificacion.rating
-        val nombre = binding.editTextNombreUsuario.text.toString().trim()
+        val nombre = auth.currentUser?.displayName ?: "Usuario Anónimo"
         val comentario = binding.editTextComentario.text.toString().trim()
 
         if (calificacion == 0f) {
             Snackbar.make(binding.root, "Por favor, selecciona al menos media estrella", Snackbar.LENGTH_SHORT).show()
             return
-        }
-        if (nombre.isEmpty()) {
-            binding.inputLayoutNombreUsuario.error = "Tu nombre es requerido"
-            return
-        } else {
-            binding.inputLayoutNombreUsuario.error = null
         }
 
         Toast.makeText(context, "Gracias por tu reseña, $nombre!", Toast.LENGTH_LONG).show()
