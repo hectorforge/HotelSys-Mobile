@@ -1,9 +1,9 @@
-package com.app.hotelsys.models
+package com.app.hotelsys.models.calificacion
 
 import com.google.firebase.firestore.ServerTimestamp
 import java.util.Date
 
-data class Resena(
+data class ResenaCalificar(
     val nombreUsuario: String = "",
     val calificacion: Float = 0.0f,
     val comentario: String = "",

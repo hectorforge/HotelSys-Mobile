@@ -8,13 +8,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.hotelsys.R
-import com.app.hotelsys.models.HabitacionCalificar
+import com.app.hotelsys.models.calificacion.HabitacionCalificar
 import com.bumptech.glide.Glide
 
-class HabitacionAdapter(
+class HabitacionCalificarAdapter(
     private var habitaciones: List<HabitacionCalificar>,
     private val onCalificarClicked: (HabitacionCalificar) -> Unit
-) : RecyclerView.Adapter<HabitacionAdapter.HabitacionViewHolder>() {
+) : RecyclerView.Adapter<HabitacionCalificarAdapter.HabitacionViewHolder>() {
 
     inner class HabitacionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imagen: ImageView = itemView.findViewById(R.id.imageViewHabitacion)

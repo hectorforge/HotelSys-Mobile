@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.app.hotelsys.adapters.ResenaAdapter
+import com.app.hotelsys.adapters.ResenaCalificarAdapter
 import com.app.hotelsys.databinding.FragmentCalificacionBinding
-import com.app.hotelsys.models.Resena
+import com.app.hotelsys.models.calificacion.ResenaCalificar
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -92,11 +92,11 @@ class CalificacionFragment : BottomSheetDialogFragment() {
 
     private fun setupResenasList() {
         val dummyResenas = listOf(
-            Resena("María González", 5f, "Excelente habitación, muy limpia y cómoda.", Date()),
-            Resena("Carlos Ruiz", 3.5f, "Muy buena ubicación y amenidades.", Date(System.currentTimeMillis() - 86400000 * 7))
+            ResenaCalificar("María González", 5f, "Excelente habitación, muy limpia y cómoda.", Date()),
+            ResenaCalificar("Carlos Ruiz", 3.5f, "Muy buena ubicación y amenidades.", Date(System.currentTimeMillis() - 86400000 * 7))
         )
         binding.recyclerViewResenas.layoutManager = LinearLayoutManager(context)
-        binding.recyclerViewResenas.adapter = ResenaAdapter(dummyResenas)
+        binding.recyclerViewResenas.adapter = ResenaCalificarAdapter(dummyResenas)
     }
 
     private fun enviarCalificacion() {

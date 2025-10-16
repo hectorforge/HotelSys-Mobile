@@ -1,4 +1,4 @@
-package com.app.hotelsys.models
+package com.app.hotelsys.models.calificacion
 
 data class HabitacionCalificar(
     val id: Int,

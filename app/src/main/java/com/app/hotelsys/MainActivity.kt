@@ -2,15 +2,14 @@ package com.app.hotelsys
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.app.hotelsys.adapters.HabitacionAdapter
-import com.app.hotelsys.models.EstadoHabitacionCalificar
-import com.app.hotelsys.models.HabitacionCalificar
-import com.app.hotelsys.models.ImagenHabitacionCalificar
-import com.app.hotelsys.models.TipoHabitacionCalificar
+import com.app.hotelsys.adapters.HabitacionCalificarAdapter
+import com.app.hotelsys.models.calificacion.EstadoHabitacionCalificar
+import com.app.hotelsys.models.calificacion.HabitacionCalificar
+import com.app.hotelsys.models.calificacion.ImagenHabitacionCalificar
+import com.app.hotelsys.models.calificacion.TipoHabitacionCalificar
 import com.app.hotelsys.ui.auth.AuthActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.app.hotelsys.ui.calificacion.CalificacionFragment
@@ -20,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var recyclerView: RecyclerView
-    private lateinit var habitacionAdapter: HabitacionAdapter
+    private lateinit var habitacionCalificarAdapter: HabitacionCalificarAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +59,7 @@ class MainActivity : AppCompatActivity() {
     private fun loadDummyData() {
         val habitacionesDePrueba = createDummyHabitaciones()
 
-        habitacionAdapter = HabitacionAdapter(habitacionesDePrueba) { habitacion ->
+        habitacionCalificarAdapter = HabitacionCalificarAdapter(habitacionesDePrueba) { habitacion ->
             val imageUrl = if (habitacion.imagenes.isNotEmpty()) habitacion.imagenes[0].url else ""
             val calificacionFragment = CalificacionFragment.newInstance(
                 habitacion.id,
@@ -71,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             calificacionFragment.show(supportFragmentManager, "CalificacionFragment")
         }
 
-        recyclerView.adapter = habitacionAdapter
+        recyclerView.adapter = habitacionCalificarAdapter
     }
 
     private fun createDummyHabitaciones(): List<HabitacionCalificar> {

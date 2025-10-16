@@ -1,4 +1,4 @@
-package com.app.hotelsys.models
+package com.app.hotelsys.models.calificacion
 
 import com.google.gson.annotations.SerializedName
 

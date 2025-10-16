@@ -7,22 +7,20 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.hotelsys.R
-import com.app.hotelsys.models.Resena
-import java.text.SimpleDateFormat
-import java.util.*
+import com.app.hotelsys.models.calificacion.ResenaCalificar
 
-class ResenaAdapter(private val resenas: List<Resena>) :
-    RecyclerView.Adapter<ResenaAdapter.ResenaViewHolder>() {
+class ResenaCalificarAdapter(private val resenas: List<ResenaCalificar>) :
+    RecyclerView.Adapter<ResenaCalificarAdapter.ResenaViewHolder>() {
 
     inner class ResenaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nombre: TextView = itemView.findViewById(R.id.textViewNombreUsuarioResena)
         val rating: RatingBar = itemView.findViewById(R.id.ratingBarResena)
         val comentario: TextView = itemView.findViewById(R.id.textViewComentarioResena)
 
-        fun bind(resena: Resena) {
-            nombre.text = resena.nombreUsuario
-            rating.rating = resena.calificacion
-            comentario.text = resena.comentario
+        fun bind(resenaCalificar: ResenaCalificar) {
+            nombre.text = resenaCalificar.nombreUsuario
+            rating.rating = resenaCalificar.calificacion
+            comentario.text = resenaCalificar.comentario
         }
     }
 
