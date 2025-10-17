@@ -15,8 +15,13 @@
             android:name=".MainActivityIndex"
             android:exported="true" />
         <activity
+            android:name=".CalificarActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MaterialComponents.Light.DialogWhenLarge" />
+
+        <activity
             android:name=".ui.auth.AuthActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

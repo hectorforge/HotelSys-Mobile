@@ -9,9 +9,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.app.hotelsys.MainActivity
+import com.app.hotelsys.MainActivityIndex
 import com.app.hotelsys.R
 import com.app.hotelsys.databinding.FragmentLoginBinding
-
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginFragment : Fragment() {
@@ -43,7 +43,8 @@ class LoginFragment : Fragment() {
 
             auth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
-                    startActivity(Intent(requireContext(), MainActivity::class.java))
+                    // ✅ Ir a la pantalla principal correcta
+                    startActivity(Intent(requireContext(), MainActivityIndex::class.java))
                     requireActivity().finish()
                 }
                 .addOnFailureListener {
@@ -54,7 +55,6 @@ class LoginFragment : Fragment() {
         binding.textRegister.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
-
     }
 
     override fun onDestroyView() {

@@ -1,45 +1,36 @@
 package com.app.hotelsys
 
 import android.content.Intent
-import android.graphics.PorterDuff
 import android.os.Bundle
+import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.doOnTextChanged
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.app.hotelsys.adapters.HabitacionAdapter
+import com.app.hotelsys.models.Habitacion
 import com.google.android.material.appbar.MaterialToolbar
 
 class MainActivityIndex : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_index)
+        setContentView(R.layout.activity_index)
 
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
         val btnMenu = findViewById<ImageButton>(R.id.btnMenu)
+        val recyclerHabitaciones = findViewById<RecyclerView>(R.id.recyclerHabitaciones)
+        val etBuscar = findViewById<EditText>(R.id.etBuscar)
+        val tvCantidad = findViewById<TextView>(R.id.tvCantidadHabitaciones)
 
-        // Recuperar rol enviado desde el login
-        val rol = intent.getStringExtra("rol")
-        Toast.makeText(this, "Has iniciado sesión como: $rol", Toast.LENGTH_LONG).show()
-
-        // Popup menú
+        // ====== MENÚ TOOLBAR ======
         val popupMenu = PopupMenu(this, btnMenu)
         popupMenu.menuInflater.inflate(R.menu.menu_toolbar, popupMenu.menu)
-
-        try {
-            val fieldMPopup = PopupMenu::class.java.getDeclaredField("mPopup")
-            fieldMPopup.isAccessible = true
-            val mPopup = fieldMPopup.get(popupMenu)
-            mPopup.javaClass
-                .getDeclaredMethod("setForceShowIcon", Boolean::class.java)
-                .invoke(mPopup, true)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        btnMenu.setOnClickListener { popupMenu.show() }
 
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
@@ -52,9 +43,7 @@ class MainActivityIndex : AppCompatActivity() {
                     true
                 }
                 R.id.nav_logout -> {
-                    Toast.makeText(this, "Sesión cerrada", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, MainActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                     finish()
                     true
@@ -63,31 +52,62 @@ class MainActivityIndex : AppCompatActivity() {
             }
         }
 
-        btnMenu.setOnClickListener {
-            popupMenu.show()
-        }
+        // ====== RECYCLER VIEW ======
+        recyclerHabitaciones.layoutManager = LinearLayoutManager(this)
 
-        val btnFavorito = findViewById<ImageButton>(R.id.btnFavorito)
-        val btnFavorito2 = findViewById<ImageButton>(R.id.btnFavorito2)
-        val btnFavorito3 = findViewById<ImageButton>(R.id.btnFavorito3)
+        val listaHabitaciones = listOf(
+            Habitacion(
+                "Suite Ejecutiva",
+                "Amplia suite con vista panorámica de la ciudad.",
+                "$150 / noche",
+                "⭐ 4.8 (124 reseñas)",
+                "https://www.hotelboutiqueperu.com/wp-content/uploads/2020/07/habitacion-suite-ejecutiva.jpg"
+            ),
+            Habitacion(
+                "Habitación Doble",
+                "Cómoda y luminosa, ideal para dos personas.",
+                "$90 / noche",
+                "⭐ 4.6 (98 reseñas)",
+                "https://cf.bstatic.com/xdata/images/hotel/max1024x768/123456789.jpg"
+            ),
+            Habitacion(
+                "Suite Presidencial",
+                "Lujo total con jacuzzi y sala privada.",
+                "$250 / noche",
+                "⭐ 5.0 (210 reseñas)",
+                "https://images.trvl-media.com/hotels/1000000/30000/24400/24316/24316_321.jpg"
+            )
+        )
 
-        // Función para alternar color del corazón
-        fun configurarFavorito(boton: ImageButton) {
-            var esFavorito = false
-            boton.setOnClickListener {
-                esFavorito = !esFavorito
-                val color = if (esFavorito) {
-                    ContextCompat.getColor(this, android.R.color.black) // activado
-                } else {
-                    ContextCompat.getColor(this, android.R.color.white) // desactivado
-                }
-                boton.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+        val adapter = HabitacionAdapter(
+            listaHabitaciones,
+            onClickCalificar = { habitacion ->
+                // 👉 Abrir CalificarActivity
+                val intent = Intent(this, CalificarActivity::class.java)
+                intent.putExtra("nombreHabitacion", habitacion.nombre)
+                intent.putExtra("imagenHabitacion", habitacion.imagenUrl)
+                startActivity(intent)
+            },
+            onClickReservar = { habitacion ->
+                Toast.makeText(this, "Reservar ${habitacion.nombre}", Toast.LENGTH_SHORT).show()
+            },
+            onClickFavorito = { habitacion ->
+                Toast.makeText(this, "Favorito ${habitacion.nombre}", Toast.LENGTH_SHORT).show()
             }
-        }
+        )
 
-        // Asignar función a cada botón
-        configurarFavorito(btnFavorito)
-        configurarFavorito(btnFavorito2)
-        configurarFavorito(btnFavorito3)
+        recyclerHabitaciones.adapter = adapter
+
+        // ====== FILTRO DE BÚSQUEDA ======
+        etBuscar.doOnTextChanged { texto, _, _, _ ->
+            val query = texto.toString().trim().lowercase()
+
+            val filtradas = listaHabitaciones.filter {
+                it.nombre.lowercase().contains(query) || it.precio.lowercase().contains(query)
+            }
+
+            adapter.updateData(filtradas)
+            tvCantidad.text = "${filtradas.size} encontradas"
+        }
     }
 }
