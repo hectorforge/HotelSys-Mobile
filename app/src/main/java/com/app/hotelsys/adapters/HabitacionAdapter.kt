@@ -13,15 +13,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.hotelsys.R
 import com.app.hotelsys.models.Habitacion
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 
 class HabitacionAdapter(
-    private var listaHabitaciones: List<Habitacion>,
-    private val onClickCalificar: (Habitacion) -> Unit,
+    var listaHabitaciones: List<Habitacion>,
+    private val onClickCalificar: (Habitacion, String?, Int) -> Unit, // enviamos posición + imagen
     private val onClickReservar: (Habitacion) -> Unit,
     private val onClickFavorito: (Habitacion) -> Unit
 ) : RecyclerView.Adapter<HabitacionAdapter.HabitacionViewHolder>() {
 
-    private val favoritos = mutableSetOf<Int>()
+    private val favoritos = mutableSetOf<Int>() // posiciones favoritas
 
     inner class HabitacionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imgHabitacion: ImageView = itemView.findViewById(R.id.imgHabitacion)
@@ -44,20 +45,52 @@ class HabitacionAdapter(
         val habitacion = listaHabitaciones[position]
         val context = holder.itemView.context
 
+        // Textos
         holder.tvNombre.text = habitacion.nombre
         holder.tvDescripcion.text = habitacion.descripcion
         holder.tvPrecio.text = habitacion.precio
         holder.tvCalificacion.text = habitacion.calificacion
 
+        // === Fondos disponibles ===
+        val fondos = listOf(
+            R.drawable.fondo2,
+            R.drawable.fondo3,
+            R.drawable.fondo4,
+            R.drawable.fondo5,
+            R.drawable.fondo6,
+            R.drawable.fondo7,
+            R.drawable.fondo8
+        )
+
+        // Asignar fondo solo si no tiene ya asignado
+        if (habitacion.fondoResId == 0) {
+            habitacion.fondoResId = fondos[position % fondos.size]
+        }
+
+        // Construir URL de imagen si existe
+        val imagenUrlCompleta = habitacion.imagenUrl?.takeIf { it.isNotBlank() }?.let {
+            if (it.startsWith("http")) it else "http://192.168.68.61:8081$it"
+        }
+
+        // Cargar imagen o fondo
         Glide.with(context)
-            .load(habitacion.imagenUrl)
-            .placeholder(R.drawable.fondo4)
+            .load(imagenUrlCompleta ?: habitacion.fondoResId)
+            .placeholder(habitacion.fondoResId)
+            .error(habitacion.fondoResId)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .centerCrop()
             .into(holder.imgHabitacion)
 
-        holder.btnCalificar.setOnClickListener { onClickCalificar(habitacion) }
+        // Botón Calificar → enviamos posición + imagen
+        holder.btnCalificar.setOnClickListener {
+            val imagenParaEnviar = imagenUrlCompleta ?: habitacion.fondoResId.toString()
+            onClickCalificar(habitacion, imagenParaEnviar, position)
+        }
+
+        // Botón Reservar
         holder.btnReservar.setOnClickListener { onClickReservar(habitacion) }
 
+        // Favoritos
         val esFavorito = favoritos.contains(position)
         actualizarIconoFavorito(holder, esFavorito)
 
@@ -89,6 +122,7 @@ class HabitacionAdapter(
 
     override fun getItemCount(): Int = listaHabitaciones.size
 
+    // Actualizar datos desde API o búsqueda
     fun updateData(nuevaLista: List<Habitacion>) {
         listaHabitaciones = nuevaLista
         notifyDataSetChanged()

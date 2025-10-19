@@ -5,11 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivityIndex">
+    tools:context=".FavoritosActivity">
 
-    <!--  Toolbar superior -->
+    <!-- ===== Toolbar superior ===== -->
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/toolbarFavoritos"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/hotel_azul"
@@ -48,7 +48,7 @@
             </LinearLayout>
 
             <ImageButton
-                android:id="@+id/btnMenu"
+                android:id="@+id/btnMenuFavoritos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -61,72 +61,43 @@
         </RelativeLayout>
     </com.google.android.material.appbar.MaterialToolbar>
 
-    <!--  Contenido con búsqueda + lista -->
+    <!-- ===== Contenido principal ===== -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:padding="12dp"
         android:layout_marginTop="?attr/actionBarSize"
-        android:padding="8dp">
+        android:layout_marginBottom="70dp">
 
-        <!-- Bloque de búsqueda -->
-        <EditText
-            android:id="@+id/etBuscar"
+        <TextView
+            android:id="@+id/tvTituloFavoritos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Buscar habitaciones..."
-            android:drawableStart="@android:drawable/ic_menu_search"
+            android:text="Mis Favoritos"
+            android:textSize="20sp"
+            android:textStyle="bold"
             android:padding="8dp"
-            android:background="@android:drawable/edit_text"
-            android:layout_marginBottom="10dp" />
+            android:textColor="@android:color/black"
+            android:drawableStart="@drawable/rocket_24px"
+            android:drawablePadding="8dp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:id="@+id/tvTituloHabitaciones"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Habitaciones disponibles"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black" />
-
-            <TextView
-                android:id="@+id/tvCantidadHabitaciones"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=" encontradas"
-                android:textSize="12sp"
-                android:textColor="@android:color/darker_gray"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!--  Lista de habitaciones -->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerHabitaciones"
+            android:id="@+id/recyclerFavoritos"
             android:layout_width="match_parent"
-            android:layout_height="473dp"
-            android:layout_weight="0"
-            android:clipToPadding="false"
-            android:scrollbars="vertical" />
-
+            android:layout_height="match_parent"
+            android:layout_marginTop="4dp" />
     </LinearLayout>
 
-    <!--  Bottom Navigation -->
+    <!-- ===== Bottom Navigation ===== -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNav"
+        android:id="@+id/bottomFavoritos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/hotel_azul"
         app:itemIconTint="@android:color/white"
         app:itemTextColor="@android:color/white"
-        app:menu="@menu/menu_botoom" />
+        app:menu="@menu/menu_favoritos" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

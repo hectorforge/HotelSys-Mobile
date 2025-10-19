@@ -52,7 +52,6 @@
                 android:layout_height="wrap_content"
                 android:padding="8dp">
 
-                <!-- Imagen -->
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivRoom"
                     android:layout_width="72dp"
@@ -65,7 +64,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginEnd="8dp" />
 
-                <!-- Nombre -->
                 <TextView
                     android:id="@+id/tvRoomName"
                     android:layout_width="0dp"
@@ -78,7 +76,6 @@
                     app:layout_constraintStart_toEndOf="@id/ivRoom"
                     app:layout_constraintEnd_toEndOf="parent" />
 
-                <!-- Rating + puntuación + reseñas -->
                 <LinearLayout
                     android:id="@+id/layoutRating"
                     android:layout_width="wrap_content"
@@ -147,7 +144,6 @@
                 android:textSize="15sp" />
         </LinearLayout>
 
-        <!-- Subtítulo -->
         <TextView
             android:id="@+id/tvSubTitle"
             android:layout_width="wrap_content"
@@ -159,7 +155,7 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="18dp" />
 
-        <!-- CARD 1: Carlos Cornejo -->
+        <!-- Card 1 -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardCarlos"
             android:layout_width="0dp"
@@ -178,34 +174,34 @@
                 android:padding="12dp">
 
                 <TextView
+                    android:id="@+id/tvNombre"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Carlos Cornejo"
                     android:textStyle="bold"
                     android:textSize="15sp"
                     android:textColor="#000000" />
 
                 <RatingBar
+                    android:id="@+id/rbCalificacion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="?android:attr/ratingBarStyleSmall"
                     android:numStars="5"
                     android:isIndicator="true"
-                    android:rating="5"
                     android:layout_marginTop="6dp" />
 
                 <TextView
+                    android:id="@+id/tvFecha"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Hace 2 días"
                     android:textSize="12sp"
                     android:textColor="#777777"
                     android:layout_marginTop="6dp" />
 
                 <TextView
+                    android:id="@+id/tvComentario"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Excelente habitación, muy limpia y cómoda. El servicio fue excepcional."
                     android:textSize="14sp"
                     android:textColor="#333333"
                     android:layout_marginTop="8dp" />
@@ -222,16 +218,16 @@
                         android:src="@drawable/thumb_up_24px" />
 
                     <TextView
+                        android:id="@+id/tvLikes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="8"
                         android:layout_marginStart="6dp"
                         android:textColor="#444444" />
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- CARD 2: Ángel Sánchez -->
+        <!-- Card 2 -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardAngel"
             android:layout_width="0dp"
@@ -250,34 +246,34 @@
                 android:padding="12dp">
 
                 <TextView
+                    android:id="@+id/tvNombre1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ángel Sánchez"
                     android:textStyle="bold"
                     android:textColor="#000000"
                     android:textSize="15sp" />
 
                 <RatingBar
+                    android:id="@+id/rbCalificacion1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="?android:attr/ratingBarStyleSmall"
                     android:numStars="5"
                     android:isIndicator="true"
-                    android:rating="4"
                     android:layout_marginTop="6dp" />
 
                 <TextView
+                    android:id="@+id/tvFecha1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Hace 4 días"
                     android:textSize="12sp"
                     android:textColor="#777777"
                     android:layout_marginTop="6dp" />
 
                 <TextView
+                    android:id="@+id/tvComentario1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Muy buena ubicación y muy cómodas, solo que el wifi podría ser más rápido."
                     android:textSize="14sp"
                     android:textColor="#333333"
                     android:layout_marginTop="8dp" />
@@ -294,14 +290,13 @@
                         android:src="@drawable/thumb_up_24px" />
 
                     <TextView
+                        android:id="@+id/tvLikes1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="12"
                         android:layout_marginStart="6dp"
                         android:textColor="#444444" />
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

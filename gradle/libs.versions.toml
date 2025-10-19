@@ -14,7 +14,7 @@ firebaseFirestore = "26.0.1"
 firebaseAuth = "24.0.1"
 navigationFragmentKtx = "2.9.5"
 navigationUiKtx = "2.9.5"
-glide = "4.16.0" # <--- AÑADE ESTA LÍNEA
+glide = "4.16.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

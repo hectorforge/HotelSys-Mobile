@@ -23,8 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:contentDescription="Imagen de habitación"
-                android:src="@drawable/fondo4" />
+                android:contentDescription="Imagen de habitación" />
 
             <ImageButton
                 xmlns:app="http://schemas.android.com/apk/res-auto"

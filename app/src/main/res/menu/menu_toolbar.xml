@@ -6,11 +6,7 @@
         android:title="Mi cuenta"
         android:icon="@drawable/person_edit_24px"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/nav_favoritos"
-        android:title="Favoritos"
-        android:icon="@drawable/favorite_24px"
-        app:showAsAction="never" />
+
     <item
         android:id="@+id/nav_logout"
         android:title="Cerrar sesión"
