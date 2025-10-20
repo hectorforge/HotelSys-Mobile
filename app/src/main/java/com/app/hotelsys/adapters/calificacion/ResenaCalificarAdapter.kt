@@ -1,4 +1,4 @@
-package com.app.hotelsys.adapters
+package com.app.hotelsys.adapters.calificacion
 
 import android.view.LayoutInflater
 import android.view.View

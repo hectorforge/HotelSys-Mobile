@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.app.hotelsys.adapters.ResenaCalificarAdapter
+import com.app.hotelsys.adapters.calificacion.ResenaCalificarAdapter
 import com.app.hotelsys.databinding.FragmentCalificacionBinding
 import com.app.hotelsys.models.calificacion.ResenaCalificar
 import com.bumptech.glide.Glide

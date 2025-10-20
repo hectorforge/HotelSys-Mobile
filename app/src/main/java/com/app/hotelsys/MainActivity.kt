@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.app.hotelsys.adapters.HabitacionCalificarAdapter
+import com.app.hotelsys.adapters.calificacion.HabitacionCalificarAdapter
 import com.app.hotelsys.models.calificacion.EstadoHabitacionCalificar
 import com.app.hotelsys.models.calificacion.HabitacionCalificar
 import com.app.hotelsys.models.calificacion.ImagenHabitacionCalificar
