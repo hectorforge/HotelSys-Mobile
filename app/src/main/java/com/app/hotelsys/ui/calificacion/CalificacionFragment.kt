@@ -9,13 +9,13 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.hotelsys.adapters.calificacion.ResenaCalificarAdapter
 import com.app.hotelsys.databinding.FragmentCalificacionBinding
-import com.app.hotelsys.models.calificacion.ResenaCalificar
+import com.app.hotelsys.models.calificacion.CalificacionCalificar
+import com.app.hotelsys.repository.CalificacionRepository
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
-import java.util.Date
 import com.google.firebase.auth.FirebaseAuth
 
 class CalificacionFragment : BottomSheetDialogFragment() {
@@ -23,12 +23,13 @@ class CalificacionFragment : BottomSheetDialogFragment() {
     private var _binding: FragmentCalificacionBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var auth: FirebaseAuth
+    private val calificacionRepository = CalificacionRepository()
+
     private var habitacionId: Int = 0
     private var habitacionNumero: String = ""
     private var habitacionTipo: String = ""
     private var habitacionImagenUrl: String = ""
-
-    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,9 +44,10 @@ class CalificacionFragment : BottomSheetDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
         dialog.setOnShowListener {
-            val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-            if (bottomSheet != null) {
-                val behavior = BottomSheetBehavior.from(bottomSheet)
+            val bottomSheet =
+                dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.let {
+                val behavior = BottomSheetBehavior.from(it)
                 behavior.state = BottomSheetBehavior.STATE_EXPANDED
                 behavior.skipCollapsed = true
             }
@@ -64,24 +66,52 @@ class CalificacionFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        auth = FirebaseAuth.getInstance() // Inicializa FirebaseAuth
+        auth = FirebaseAuth.getInstance()
 
-        setupHeader()
         setupForm()
-        setupResenasList()
+        cargarDatosReales()
     }
 
-    private fun setupHeader() {
+    private fun cargarDatosReales() {
+        // Header básico
         binding.textViewNombreHabitacionResena.text = "$habitacionTipo N° $habitacionNumero"
-        Glide.with(this).load(habitacionImagenUrl).centerCrop().into(binding.imageViewHabitacionResena)
+        Glide.with(this)
+            .load(habitacionImagenUrl)
+            .centerCrop()
+            .into(binding.imageViewHabitacionResena)
 
-        binding.ratingBarPromedio.rating = 4.8f
-        binding.textViewPromedio.text = "4.8"
-        binding.textViewTotalResenas.text = "(124 reseñas)"
+        // Cargar calificaciones reales desde Firebase/Repo
+        calificacionRepository.obtenerCalificacionesPorHabitacion(
+            habitacionId = habitacionId,
+            onSuccess = { calificaciones ->
+                actualizarHeader(calificaciones)
+                actualizarListaResenas(calificaciones)
+            },
+            onFailure = {
+                Toast.makeText(context, "Error al cargar reseñas", Toast.LENGTH_SHORT).show()
+            }
+        )
+    }
+
+    private fun actualizarHeader(calificaciones: List<CalificacionCalificar>) {
+        if (calificaciones.isEmpty()) {
+            binding.ratingBarPromedio.rating = 0f
+            binding.textViewPromedio.text = "N/A"
+            binding.textViewTotalResenas.text = "(0 reseñas)"
+        } else {
+            val promedio = calificaciones.map { it.calificacion }.average()
+            binding.ratingBarPromedio.rating = promedio.toFloat()
+            binding.textViewPromedio.text = String.format("%.1f", promedio)
+            binding.textViewTotalResenas.text = "(${calificaciones.size} reseñas)"
+        }
+    }
+
+    private fun actualizarListaResenas(calificaciones: List<CalificacionCalificar>) {
+        binding.recyclerViewResenas.layoutManager = LinearLayoutManager(context)
+        binding.recyclerViewResenas.adapter = ResenaCalificarAdapter(calificaciones)
     }
 
     private fun setupForm() {
-        // Rellenamos el nombre del usuario y lo deshabilitamos
         val nombreUsuarioActual = auth.currentUser?.displayName ?: "Usuario Anónimo"
         binding.editTextNombreUsuario.setText(nombreUsuarioActual)
         binding.inputLayoutNombreUsuario.isEnabled = false
@@ -90,30 +120,40 @@ class CalificacionFragment : BottomSheetDialogFragment() {
         binding.buttonCancelar.setOnClickListener { dismiss() }
     }
 
-    private fun setupResenasList() {
-        val dummyResenas = listOf(
-            ResenaCalificar("María González", 5f, "Excelente habitación, muy limpia y cómoda.", Date()),
-            ResenaCalificar("Carlos Ruiz", 3.5f, "Muy buena ubicación y amenidades.", Date(System.currentTimeMillis() - 86400000 * 7))
-        )
-        binding.recyclerViewResenas.layoutManager = LinearLayoutManager(context)
-        binding.recyclerViewResenas.adapter = ResenaCalificarAdapter(dummyResenas)
-    }
-
     private fun enviarCalificacion() {
-        val inputMethodManager = requireActivity().getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
+        val currentUser = auth.currentUser
+        if (currentUser == null) {
+            Snackbar.make(binding.root, "Error: No se ha podido identificar al usuario.", Snackbar.LENGTH_SHORT).show()
+            return
+        }
 
-        val calificacion = binding.ratingBarCalificacion.rating
-        val nombre = auth.currentUser?.displayName ?: "Usuario Anónimo"
-        val comentario = binding.editTextComentario.text.toString().trim()
-
-        if (calificacion == 0f) {
+        val calificacionValor = binding.ratingBarCalificacion.rating
+        if (calificacionValor == 0f) {
             Snackbar.make(binding.root, "Por favor, selecciona al menos media estrella", Snackbar.LENGTH_SHORT).show()
             return
         }
 
-        Toast.makeText(context, "Gracias por tu reseña, $nombre!", Toast.LENGTH_LONG).show()
-        dismiss()
+        binding.buttonEnviarCalificacion.isEnabled = false
+
+        val nuevaCalificacion = CalificacionCalificar(
+            habitacionId = this.habitacionId,
+            usuarioId = currentUser.uid,
+            calificacion = calificacionValor,
+            comentario = binding.editTextComentario.text.toString().trim(),
+            nombreUsuario = currentUser.displayName ?: "Anónimo"
+        )
+
+        calificacionRepository.guardarCalificacion(
+            calificacion = nuevaCalificacion,
+            onSuccess = {
+                Toast.makeText(context, "¡Gracias por tu reseña!", Toast.LENGTH_LONG).show()
+                dismiss()
+            },
+            onFailure = { exception ->
+                Snackbar.make(binding.root, "Error al guardar: ${exception.message}", Snackbar.LENGTH_LONG).show()
+                binding.buttonEnviarCalificacion.isEnabled = true
+            }
+        )
     }
 
     override fun onDestroyView() {
@@ -127,14 +167,18 @@ class CalificacionFragment : BottomSheetDialogFragment() {
         private const val ARG_HABITACION_TIPO = "habitacion_tipo"
         private const val ARG_HABITACION_IMAGEN_URL = "habitacion_imagen_url"
 
-        fun newInstance(habitacionId: Int, habitacionNumero: String, habitacionTipo: String, habitacionImagenUrl: String) =
-            CalificacionFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_HABITACION_ID, habitacionId)
-                    putString(ARG_HABITACION_NUMERO, habitacionNumero)
-                    putString(ARG_HABITACION_TIPO, habitacionTipo)
-                    putString(ARG_HABITACION_IMAGEN_URL, habitacionImagenUrl)
-                }
+        fun newInstance(
+            habitacionId: Int,
+            habitacionNumero: String,
+            habitacionTipo: String,
+            habitacionImagenUrl: String
+        ) = CalificacionFragment().apply {
+            arguments = Bundle().apply {
+                putInt(ARG_HABITACION_ID, habitacionId)
+                putString(ARG_HABITACION_NUMERO, habitacionNumero)
+                putString(ARG_HABITACION_TIPO, habitacionTipo)
+                putString(ARG_HABITACION_IMAGEN_URL, habitacionImagenUrl)
             }
+        }
     }
 }
