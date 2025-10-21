@@ -39,6 +39,7 @@ class MainActivityIndex : AppCompatActivity() {
         setContentView(R.layout.activity_index)
 
         // ====== Vistas ======
+
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
         val btnMenu = findViewById<ImageButton>(R.id.btnMenu)
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
@@ -92,8 +93,8 @@ class MainActivityIndex : AppCompatActivity() {
                     Toast.makeText(this, "Próximamente: Reservas", Toast.LENGTH_SHORT).show()
                     true
                 }
-                R.id.nav_productos -> {
-                    Toast.makeText(this, "Próximamente: Productos ", Toast.LENGTH_SHORT).show()
+                R.id.nav_perfil -> {
+                    Toast.makeText(this, "Mis Perfiles ", Toast.LENGTH_SHORT).show()
                     true
                 }
                 else -> false
@@ -172,7 +173,7 @@ class MainActivityIndex : AppCompatActivity() {
                             descripcion = h.imagenes.firstOrNull()?.descripcion ?: "Sin descripción",
                             precio = "S/ ${h.tipoHabitacion.precioBaseNoche} / noche",
                             calificacion = "⭐ ${h.estadoHabitacion.descripcion}",
-                            imagenUrl = "https://api.ees-peru.com${h.imagenes.firstOrNull()?.url ?: ""}",
+                            imagenUrl = "http://10.0.2.2:8081/api/${h.imagenes.firstOrNull()?.url ?: ""}",
                             fondoResId = 0 // <-- valor inicial
                         )
                     }

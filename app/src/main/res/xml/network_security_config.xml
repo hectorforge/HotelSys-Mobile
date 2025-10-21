@@ -2,7 +2,7 @@
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
         <!-- Tu IP local -->
-        <domain includeSubdomains="true">192.168.68.61</domain>
+        <domain includeSubdomains="true">10.0.2.2</domain>
         <!-- Si usas localhost para pruebas -->
         <domain includeSubdomains="true">localhost</domain>
     </domain-config>

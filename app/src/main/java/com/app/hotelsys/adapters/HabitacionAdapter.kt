@@ -69,7 +69,7 @@ class HabitacionAdapter(
 
         // Construir URL de imagen si existe
         val imagenUrlCompleta = habitacion.imagenUrl?.takeIf { it.isNotBlank() }?.let {
-            if (it.startsWith("http")) it else "http://192.168.68.61:8081$it"
+            if (it.startsWith("http")) it else "http://10.0.2.2:8081/api/$it"
         }
 
         // Cargar imagen o fondo

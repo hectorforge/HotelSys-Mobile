@@ -80,6 +80,7 @@
             android:background="@android:drawable/edit_text"
             android:layout_marginBottom="10dp" />
 
+        <!-- Título y contador -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -111,8 +112,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerHabitaciones"
             android:layout_width="match_parent"
-            android:layout_height="473dp"
-            android:layout_weight="0"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:clipToPadding="false"
             android:scrollbars="vertical" />
 

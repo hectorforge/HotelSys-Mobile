@@ -16,7 +16,7 @@
         android:title="Reservas" />
 
     <item
-        android:id="@+id/nav_productos"
-        android:icon="@drawable/shopping_cart_checkout_24px"
-        android:title="Productos" />
+        android:id="@+id/nav_perfil"
+        android:icon="@drawable/ic_person"
+        android:title="Perfil" />
 </menu>
