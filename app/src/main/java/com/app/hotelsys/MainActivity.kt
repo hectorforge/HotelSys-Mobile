@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.app.hotelsys.models.Usuario
+import com.app.hotelsys.ui.MainActivityIndex
 import com.app.hotelsys.ui.auth.AuthActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -22,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
-        // Si no hay usuario logeado, redirigir al AuthActivity
+        // Si no hay usuario logueado, redirigir al AuthActivity
         val user = auth.currentUser
         if (user == null) {
             startActivity(Intent(this, AuthActivity::class.java))
@@ -52,6 +53,12 @@ class MainActivity : AppCompatActivity() {
                         txtFechaNacimiento.text = "Fecha de nacimiento: ${usuario.fechaNacimiento}"
                         txtEmail.text = "Correo: ${usuario.email}"
                         txtFechaRegistro.text = "Fecha de registro: ${usuario.fechaRegistro}"
+
+                        //  Enviar al MainActivityIndex
+                        val intent = Intent(this, MainActivityIndex::class.java)
+                        intent.putExtra("nombreUsuario", usuario.nombre)
+                        startActivity(intent)
+                        finish()
                     }
                 } else {
                     txtBienvenida.text = "No se encontraron tus datos."

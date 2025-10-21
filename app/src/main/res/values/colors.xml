@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
+    <color name="hotel_azul">#1E3C72</color>
+    <color name="hotel_azul_claro">#2A5298</color>
+    <color name="hotel_dorado">#E6B400</color>
+
+    <color name="negro_texto">#212121</color>
+    <color name="gris_texto">#757575</color>
+
     <color name="white">#FFFFFFFF</color>
+    <color name="fondo_claro">#F8F9FA</color>
+
+    <color name="estado_pendiente">#FFC107</color>
+    <color name="estado_confirmada">#4CAF50</color>
+    <color name="estado_cancelada">#F44336</color>
+    <color name="estado_finalizada">#2196F3</color>
+
 </resources>
