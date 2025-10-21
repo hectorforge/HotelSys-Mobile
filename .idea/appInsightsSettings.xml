@@ -9,9 +9,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.app.hotelsys" />
-                  <option name="mobileSdkAppId" value="1:501440997555:android:32dc7d2ea98618cf0128c6" />
-                  <option name="projectId" value="hotelsys-5bde2" />
-                  <option name="projectNumber" value="501440997555" />
+                  <option name="mobileSdkAppId" value="1:187936583397:android:b25f1e55e42d95a8a52e0c" />
+                  <option name="projectId" value="hotelsys-caca7" />
+                  <option name="projectNumber" value="187936583397" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
