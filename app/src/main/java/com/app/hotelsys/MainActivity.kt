@@ -6,7 +6,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.app.hotelsys.models.Usuario
-import com.app.hotelsys.ui.MainActivityIndex
+import com.app.hotelsys.MainActivityIndex
 import com.app.hotelsys.ui.auth.AuthActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore

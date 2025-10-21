@@ -1,97 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F9F9FF"
-    tools:context=".ui.MainActivityIndex">
+    tools:context=".MainActivityIndex">
 
+    <!-- Toolbar superior -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/hotel_azul"
+        app:popupTheme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/logoHotel"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/logo"
+                    android:contentDescription="Logo del hotel" />
+
+                <TextView
+                    android:id="@+id/tvTitulo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="HOTEL SYS"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Menú principal"
+                android:src="@drawable/ic_menu"
+                app:tint="@android:color/white"
+                android:padding="8dp" />
+        </RelativeLayout>
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <!-- Contenido principal -->
     <LinearLayout
-        android:id="@+id/headerLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="#1E3C72"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="12dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <ImageView
-            android:id="@+id/logoHotel"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_hotel"
-            android:contentDescription="Logo HotelSys"
-            android:layout_marginEnd="12dp" />
-
-        <TextView
-            android:id="@+id/txtSaludo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Hola"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:layout_weight="1" />
-
-        <ImageButton
-            android:id="@+id/btnMenu"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_menu"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Menú"
-            app:tint="@android:color/white" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layoutContenido"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center"
-        android:padding="24dp"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout"
-        app:layout_constraintBottom_toTopOf="@id/bottomNav"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_marginTop="?attr/actionBarSize"
+        android:padding="8dp">
 
-        <TextView
-            android:id="@+id/txtTitulo"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/etBuscar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Bienvenido a HotelSys"
-            android:textColor="#1E3C72"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:layout_marginBottom="8dp"/>
+            android:hint="Buscar habitaciones..."
+            android:drawableStart="@drawable/ic_search"
+            android:padding="8dp"
+            android:background="@android:drawable/edit_text"
+            android:layout_marginBottom="10dp" />
 
-        <TextView
-            android:id="@+id/txtDescripcion"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Explora nuestras habitaciones, gestiona tus reservas y más"
-            android:textColor="#777"
-            android:textSize="14sp"
-            android:gravity="center"
-            android:layout_marginTop="4dp"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/tvTituloHabitaciones"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Habitaciones disponibles"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/tvCantidadHabitaciones"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" encontradas"
+                android:textSize="12sp"
+                android:textColor="@android:color/darker_gray"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerHabitaciones"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:scrollbars="vertical" />
     </LinearLayout>
 
+    <!-- Menú inferior -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#1E3C72"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
-        app:labelVisibilityMode="labeled"
-        app:menu="@menu/bottom_nav_menu"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_gravity="bottom"
+        android:background="@color/hotel_azul"
+        app:itemIconTint="@android:color/white"
+        app:itemTextColor="@android:color/white"
+        app:menu="@menu/menu_botoom" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

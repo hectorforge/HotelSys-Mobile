@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_volver"
+        android:icon="@drawable/home_24px"
+        android:title="Volver" />
+
+    <item
+        android:id="@+id/nav_reservar"
+        android:icon="@drawable/edit_calendar_24px"
+        android:title="Reservar" />
+</menu>

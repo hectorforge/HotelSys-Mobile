@@ -1,15 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:gravity="center"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".FavoritosActivity">
 
-    <TextView
-        android:text="Pantalla: Favoritos"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <!-- ===== Toolbar superior ===== -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbarFavoritos"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/hotel_azul"
+        app:popupTheme="@style/CustomPopupMenu">
 
-</LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:id="@+id/layoutTitulo"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/logoHotel"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/logo"
+                    android:contentDescription="Logo del hotel" />
+
+                <TextView
+                    android:id="@+id/tvTitulo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="HOTEL SYS"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnMenuFavoritos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Menú principal"
+                android:src="@drawable/menu_24px"
+                app:tint="@android:color/white"
+                android:padding="8dp" />
+        </RelativeLayout>
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <!-- ===== Contenido principal ===== -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginBottom="70dp">
+
+        <TextView
+            android:id="@+id/tvTituloFavoritos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mis Favoritos"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:padding="8dp"
+            android:textColor="@android:color/black"
+            android:drawableStart="@drawable/rocket_24px"
+            android:drawablePadding="8dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerFavoritos"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
+
+    <!-- ===== Bottom Navigation ===== -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomFavoritos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/hotel_azul"
+        app:itemIconTint="@android:color/white"
+        app:itemTextColor="@android:color/white"
+        app:menu="@menu/menu_favoritos" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

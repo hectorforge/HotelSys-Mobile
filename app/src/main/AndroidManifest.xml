@@ -14,7 +14,7 @@
         android:theme="@style/Theme.HotelSys">
 
         <activity android:name=".ui.ReservasActivity" android:exported="true" />
-        <activity android:name=".ui.MainActivityIndex" android:exported="true" />
+        <activity android:name=".MainActivityIndex" android:exported="true" />
         <activity android:name=".MainActivity" android:exported="true" />
         <activity android:name=".ui.auth.AuthActivity" android:exported="true">
             <intent-filter>
