@@ -4,4 +4,10 @@
     <color name="white">#FFFFFFFF</color>
     <color name="azul_celeste">#3A9BDC</color>
     <color name="hotel_azul">#1E3C72</color>
+
+    <color name="estado_pendiente">#FFC107</color>
+    <color name="estado_confirmada">#4CAF50</color>
+    <color name="estado_cancelada">#F44336</color>
+    <color name="estado_finalizada">#2196F3</color>
 </resources>
+

@@ -18,6 +18,7 @@ import com.app.hotelsys.adapters.HabitacionAdapter
 import com.app.hotelsys.api.RetrofitClient
 import com.app.hotelsys.models.Habitacion
 import com.app.hotelsys.models.HabitacionResponse
+import com.app.hotelsys.ui.ReservasActivity
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -94,7 +95,8 @@ class MainActivityIndex : AppCompatActivity() {
                     true
                 }
                 R.id.nav_reservas -> {
-                    Toast.makeText(this, "Próximamente: Reservas", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, ReservasActivity::class.java))
+                    overridePendingTransition(0, 0)
                     true
                 }
                 R.id.nav_perfil -> {
