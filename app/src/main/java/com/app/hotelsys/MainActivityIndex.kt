@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
@@ -43,6 +44,7 @@ class MainActivityIndex : AppCompatActivity() {
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
         val btnMenu = findViewById<ImageButton>(R.id.btnMenu)
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
+
         recyclerHabitaciones = findViewById(R.id.recyclerHabitaciones)
         etBuscar = findViewById(R.id.etBuscar)
         tvCantidad = findViewById(R.id.tvCantidadHabitaciones)
@@ -76,6 +78,8 @@ class MainActivityIndex : AppCompatActivity() {
                 else -> false
             }
         }
+
+
 
         // ====== Bottom Navigation ======
         bottomNav.setOnItemSelectedListener { item ->
@@ -114,6 +118,7 @@ class MainActivityIndex : AppCompatActivity() {
             },
             onClickReservar = { habitacion ->
                 Toast.makeText(this, "Reservar ${habitacion.nombre}", Toast.LENGTH_SHORT).show()
+                Log.i("PRUEBA", "ID HABITACIÓN: ${habitacion.idHabitacion}")
             },
             onClickFavorito = { habitacion ->
                 botonFavorito(habitacion)
@@ -169,6 +174,7 @@ class MainActivityIndex : AppCompatActivity() {
 
                     listaHabitaciones = habitacionesApi.mapIndexed { index, h ->
                         Habitacion(
+                            idHabitacion = h.id,
                             nombre = "Habitación ${h.numero} (${h.tipoHabitacion.descripcion})",
                             descripcion = h.imagenes.firstOrNull()?.descripcion ?: "Sin descripción",
                             precio = "S/ ${h.tipoHabitacion.precioBaseNoche} / noche",
