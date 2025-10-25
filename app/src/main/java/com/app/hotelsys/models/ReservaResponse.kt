@@ -9,7 +9,7 @@ data class ReservaResponse(
     val montoTotalCalculado: Double,
     val activo: Boolean,
     val estadoReserva: EstadoReserva,
-    val cliente: ClienteResponse,
+    val cliente: ClienteFiltradoResponse,
     val habitaciones: List<HabitacionReserva>,
     val productos: List<ProductoReserva>
 )

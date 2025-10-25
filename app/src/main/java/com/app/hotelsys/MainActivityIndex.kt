@@ -19,6 +19,7 @@ import com.app.hotelsys.api.RetrofitClient
 import com.app.hotelsys.models.Habitacion
 import com.app.hotelsys.models.HabitacionResponse
 import com.app.hotelsys.ui.ReservasActivity
+import com.app.hotelsys.ui.reserva.ReservaFragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -121,6 +122,9 @@ class MainActivityIndex : AppCompatActivity() {
             onClickReservar = { habitacion ->
                 Toast.makeText(this, "Reservar ${habitacion.nombre}", Toast.LENGTH_SHORT).show()
                 Log.i("PRUEBA", "ID HABITACIÓN: ${habitacion.idHabitacion}")
+
+                var dialogo = ReservaFragment()
+                dialogo.show(supportFragmentManager, null)
             },
             onClickFavorito = { habitacion ->
                 botonFavorito(habitacion)

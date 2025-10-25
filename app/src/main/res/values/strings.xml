@@ -3,6 +3,18 @@
 
     <string name="favorito">Botón de favorito</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- PABLO FLORES / RESERVAR -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="fechaEntrada">Fecha de entrada</string>
+    <string name="fechaSalida">Fecha de salida</string>
+    <string name="reservaHabitacion">Reserva de Habitación</string>
+    <string name="numeroHuespedes">Número de Huespedes</string>
+    <string name="agregarProducto">¿Desea agregar un producto?</string>
+    <string name="infoUsuario">Información de Usuario</string>
+    <string name="nombreCompleto">Nombre Completo</string>
+    <string name="correo">Correo electronico</string>
+    <string name="telefono">Telefono</string>
+    <string name="resumenReserva" >Resumen de la reserva</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="reservar">Reservar</string>
 </resources>
