@@ -72,11 +72,18 @@ class HabitacionAdapter(
             if (it.startsWith("http")) it else "http://10.0.2.2:8081/api/$it"
         }
 
+        // --- Construye imagen de carga ---
+        val circularProgressDrawable = androidx.swiperefreshlayout.widget.CircularProgressDrawable(context).apply {
+            strokeWidth = 5f  // Grosor de la línea
+            centerRadius = 30f // Radio del círculo
+            start()           // ¡Importante! Inicia la animación
+        }
+
         // Cargar imagen o fondo
         Glide.with(context)
             .load(imagenUrlCompleta)
-            .placeholder(habitacion.fondoResId)
-            .error(habitacion.fondoResId)
+            .placeholder(circularProgressDrawable)
+            .error(R.drawable.placeholder_habitacion)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .centerCrop()
             .into(holder.imgHabitacion)
