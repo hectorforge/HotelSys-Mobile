@@ -185,7 +185,7 @@ class MainActivityIndex : AppCompatActivity() {
                             descripcion = h.imagenes.firstOrNull()?.descripcion ?: "Sin descripción",
                             precio = "S/ ${h.tipoHabitacion.precioBaseNoche} / noche",
                             calificacion = "⭐ ${h.estadoHabitacion.descripcion}",
-                            imagenUrl = "http://10.0.2.2:8081/api${h.imagenes.firstOrNull()?.url ?: ""}",
+                            imagenUrl = "http://10.0.2.2:8081${h.imagenes.firstOrNull()?.url ?: ""}",
                             fondoResId = 0 // <-- valor inicial
                         )
                     }
