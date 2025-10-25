@@ -74,7 +74,7 @@ class HabitacionAdapter(
 
         // Cargar imagen o fondo
         Glide.with(context)
-            .load(imagenUrlCompleta ?: habitacion.fondoResId)
+            .load(imagenUrlCompleta)
             .placeholder(habitacion.fondoResId)
             .error(habitacion.fondoResId)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
