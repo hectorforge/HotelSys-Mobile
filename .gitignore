@@ -1,6 +1,17 @@
 # Archivos de configuración del IDE
 *.iml
-.idea/*
+.idea/.name
+.idea/workspace.xml
+.idea/shelf/
+.idea/caches/
+.idea/libraries/
+.idea/tasks.xml
+.idea/httpRequests/
+.idea/dictionaries/
+.idea/vcs.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/modules.xml
 
 # Archivos de Gradle
 .gradle
