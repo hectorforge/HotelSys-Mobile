@@ -1,0 +1,37 @@
+package com.app.hotelsys.adapters.calificacion
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.RatingBar
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.app.hotelsys.R
+import com.app.hotelsys.models.calificacion.CalificacionCalificar
+
+class ResenaCalificarAdapter(private val resenas: List<CalificacionCalificar>) :
+    RecyclerView.Adapter<ResenaCalificarAdapter.ResenaViewHolder>() {
+
+    inner class ResenaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val nombre: TextView = itemView.findViewById(R.id.textViewNombreUsuarioResena)
+        private val rating: RatingBar = itemView.findViewById(R.id.ratingBarResena)
+        private val comentario: TextView = itemView.findViewById(R.id.textViewComentarioResena)
+
+        fun bind(resena: CalificacionCalificar) {
+            nombre.text = resena.nombreUsuario
+            rating.rating = resena.calificacion
+            comentario.text = resena.comentario
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResenaViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_resena, parent, false)
+        return ResenaViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ResenaViewHolder, position: Int) {
+        holder.bind(resenas[position])
+    }
+
+    override fun getItemCount(): Int = resenas.size
+}
