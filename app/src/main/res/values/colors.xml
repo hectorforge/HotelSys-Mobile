@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Colores Base -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="azul_celeste">#3A9BDC</color>
-    <color name="hotel_azul">#1E3C72</color>
 
+    <!-- Paleta de la Marca Principal -->
+    <color name="hotel_azul">#1E3C72</color>
+    <color name="hotel_azul_oscuro">#152A53</color> <!-- Para la barra de estado -->
+    <color name="hotel_acento">#00BCD4</color>   <!-- Para elementos de acento como estrellas y FAVs -->
+
+    <!-- Colores de UI y Texto -->
+    <color name="fondo_app">#F5F5F5</color>
+    <color name="texto_principal">#212121</color>
+    <color name="texto_secundario">#757575</color>
+
+    <!-- Colores de Estado -->
     <color name="estado_pendiente">#FFC107</color>
     <color name="estado_confirmada">#4CAF50</color>
     <color name="estado_cancelada">#F44336</color>
     <color name="estado_finalizada">#2196F3</color>
 </resources>
-
