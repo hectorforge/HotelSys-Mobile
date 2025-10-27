@@ -14,7 +14,7 @@
     <string name="nombreCompleto">Nombre Completo</string>
     <string name="correo">Correo electronico</string>
     <string name="telefono">Telefono</string>
-    <string name="resumenReserva" >Resumen de la reserva</string>
+    <string name="resumenReserva">Resumen de la reserva</string>
     <string name="cancelar">Cancelar</string>
     <string name="reservar">Reservar</string>
 </resources>
