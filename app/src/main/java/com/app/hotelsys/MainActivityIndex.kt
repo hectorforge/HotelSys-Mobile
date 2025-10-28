@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
@@ -33,35 +32,60 @@ import retrofit2.Response
 
 class MainActivityIndex : AppCompatActivity() {
 
+    // === Componentes UI principales ===
     private lateinit var adapter: HabitacionAdapter
     private lateinit var recyclerHabitaciones: RecyclerView
     private lateinit var tvCantidad: TextView
     private lateinit var etBuscar: EditText
+
+    // === Datos de habitaciones ===
     private var listaHabitaciones: List<Habitacion> = emptyList()
 
+    // === Lifecycle: Configuración inicial de la actividad principal ===
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_index)
 
-        // ====== Vistas ======
+        // Inicializar componentes UI
+        inicializarVistas()
 
-        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
-        val btnMenu = findViewById<ImageButton>(R.id.btnMenu)
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
+        // Configurar usuario y autenticación
+        configurarUsuarioActual()
 
+        // Configurar navegación y menús
+        configurarNavegacion()
+
+        // Configurar lista de habitaciones
+        configurarRecyclerView()
+
+        // Cargar datos desde API
+        cargarHabitacionesDesdeAPI()
+
+        // Configurar búsqueda en tiempo real
+        configurarBusqueda()
+    }
+
+    // === Setup: Inicializar referencias a vistas ===
+    private fun inicializarVistas() {
         recyclerHabitaciones = findViewById(R.id.recyclerHabitaciones)
         etBuscar = findViewById(R.id.etBuscar)
         tvCantidad = findViewById(R.id.tvCantidadHabitaciones)
+    }
 
-        // Marcar ítem actual en BottomNav
-        bottomNav.selectedItemId = R.id.nav_buscar
-
-        // ====== Usuario actual ======
+    // === Setup: Configurar información del usuario autenticado ===
+    private fun configurarUsuarioActual() {
         val usuarioActual = FirebaseAuth.getInstance().currentUser
         val emailUsuario = usuarioActual?.email ?: "Invitado"
 
-        // ====== Menú del toolbar ======
+        // Configurar menú del toolbar con datos del usuario
+        configurarMenuToolbar(emailUsuario)
+    }
+
+    // === Setup: Configurar menú del toolbar con opciones de usuario ===
+    private fun configurarMenuToolbar(emailUsuario: String) {
+        val btnMenu = findViewById<ImageButton>(R.id.btnMenu)
         val popupMenu = PopupMenu(this, btnMenu)
+
         popupMenu.menuInflater.inflate(R.menu.menu_toolbar, popupMenu.menu)
         btnMenu.setOnClickListener { popupMenu.show() }
         popupMenu.menu.findItem(R.id.nav_micuenta).title = "Mi cuenta ($emailUsuario)"
@@ -82,16 +106,16 @@ class MainActivityIndex : AppCompatActivity() {
                 else -> false
             }
         }
+    }
 
+    // === Setup: Configurar navegación inferior entre secciones ===
+    private fun configurarNavegacion() {
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
+        bottomNav.selectedItemId = R.id.nav_buscar
 
-
-        // ====== Bottom Navigation ======
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_buscar -> {
-                    //
-                    true
-                }
+                R.id.nav_buscar -> true
                 R.id.nav_favoritos -> {
                     startActivity(Intent(this, FavoritosActivity::class.java))
                     overridePendingTransition(0, 0)
@@ -110,12 +134,15 @@ class MainActivityIndex : AppCompatActivity() {
                 else -> false
             }
         }
+    }
 
-        // ====== RecyclerView ======
+    // === Setup: Configurar RecyclerView con adaptador y callbacks de acciones ===
+    private fun configurarRecyclerView() {
         recyclerHabitaciones.layoutManager = LinearLayoutManager(this)
         adapter = HabitacionAdapter(
             listOf(),
             onClickCalificar = { habitacion, imagenUrl, position ->
+                // Abrir fragment de calificación
                 val calificacionFragment = CalificacionFragment.newInstance(
                     habitacionId = habitacion.idHabitacion,
                     habitacionNumero = habitacion.nombre,
@@ -125,11 +152,11 @@ class MainActivityIndex : AppCompatActivity() {
                 calificacionFragment.show(supportFragmentManager, "CalificacionFragment")
             },
             onClickReservar = { habitacion ->
+                // Abrir fragment de reserva con datos de la habitación
                 Toast.makeText(this, "Reservar ${habitacion.nombre}", Toast.LENGTH_SHORT).show()
                 Log.i("PRUEBA", "ID HABITACIÓN: ${habitacion.idHabitacion}")
 
                 val dialogo = ReservaFragment()
-
                 val bundle = Bundle()
                 bundle.putInt("idHabitacion", habitacion.idHabitacion)
                 bundle.putString("nombreHabitacion", habitacion.nombre)
@@ -138,7 +165,6 @@ class MainActivityIndex : AppCompatActivity() {
                 bundle.putString("imagenHabitacion", habitacion.imagenUrl)
 
                 dialogo.arguments = bundle
-
                 dialogo.show(supportFragmentManager, "fragment_reserva")
             },
             onClickFavorito = { habitacion ->
@@ -146,11 +172,10 @@ class MainActivityIndex : AppCompatActivity() {
             }
         )
         recyclerHabitaciones.adapter = adapter
+    }
 
-        // ====== Cargar habitaciones ======
-        cargarHabitacionesDesdeAPI()
-
-        // ====== Búsqueda ======
+    // === Setup: Configurar búsqueda en tiempo real por texto ===
+    private fun configurarBusqueda() {
         etBuscar.doOnTextChanged { texto, _, _, _ ->
             val query = texto.toString().trim().lowercase()
             val filtradas = listaHabitaciones.filter {
@@ -163,7 +188,7 @@ class MainActivityIndex : AppCompatActivity() {
         }
     }
 
-    // === Guardar o eliminar favorito ===
+    // === Storage: Alternar habitación en favoritos (agregar/eliminar) ===
     private fun botonFavorito(habitacion: Habitacion) {
         val prefs = getSharedPreferences("favoritos", Context.MODE_PRIVATE)
         val gson = Gson()
@@ -182,7 +207,7 @@ class MainActivityIndex : AppCompatActivity() {
         prefs.edit().putString("lista", gson.toJson(lista)).apply()
     }
 
-    // === Cargar habitaciones desde API ===
+    // === Red: Cargar habitaciones desde API y actualizar UI ===
     private fun cargarHabitacionesDesdeAPI() {
         val call = RetrofitClient.instance.getHabitaciones()
         call.enqueue(object : Callback<List<HabitacionResponse>> {
@@ -193,6 +218,7 @@ class MainActivityIndex : AppCompatActivity() {
                 if (response.isSuccessful && response.body() != null) {
                     val habitacionesApi = response.body() ?: emptyList()
 
+                    // Transformar respuesta API a modelo local
                     listaHabitaciones = habitacionesApi.mapIndexed { index, h ->
                         Habitacion(
                             idHabitacion = h.id,
@@ -201,10 +227,11 @@ class MainActivityIndex : AppCompatActivity() {
                             precio = "S/ ${h.tipoHabitacion.precioBaseNoche} / noche",
                             calificacion = "⭐ ${h.estadoHabitacion.descripcion}",
                             imagenUrl = "http://10.0.2.2:8081${h.imagenes.firstOrNull()?.url ?: ""}",
-                            fondoResId = 0 // <-- valor inicial
+                            fondoResId = 0
                         )
                     }
 
+                    // Actualizar adaptador y contador
                     adapter.updateData(listaHabitaciones)
                     tvCantidad.text = "${listaHabitaciones.size} encontradas"
 
