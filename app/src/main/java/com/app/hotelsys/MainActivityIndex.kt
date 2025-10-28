@@ -18,6 +18,7 @@ import com.app.hotelsys.adapters.HabitacionAdapter
 import com.app.hotelsys.api.RetrofitClient
 import com.app.hotelsys.models.Habitacion
 import com.app.hotelsys.models.HabitacionResponse
+import com.app.hotelsys.ui.PerfilActivity
 import com.app.hotelsys.ui.ReservasActivity
 import com.app.hotelsys.ui.calificacion.CalificacionFragment
 import com.app.hotelsys.ui.reserva.ReservaFragment
@@ -102,7 +103,8 @@ class MainActivityIndex : AppCompatActivity() {
                     true
                 }
                 R.id.nav_perfil -> {
-                    Toast.makeText(this, "Mis Perfiles ", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, PerfilActivity::class.java))
+                    overridePendingTransition(0, 0)
                     true
                 }
                 else -> false
