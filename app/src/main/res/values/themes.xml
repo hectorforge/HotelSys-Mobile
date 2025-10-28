@@ -1,24 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Tema base de la aplicación -->
-    <style name="Base.Theme.HotelSys" parent="Theme.Material3.DayNight.NoActionBar">
 
-        <!-- Colores Primarios (para barras, botones principales) -->
+    <style name="Base.Theme.HotelSys" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Colores principales -->
         <item name="colorPrimary">@color/hotel_azul</item>
         <item name="colorPrimaryVariant">@color/hotel_azul_oscuro</item>
-        <item name="colorOnPrimary">@color/white</item> <!-- Color del texto sobre el color primario -->
+        <item name="colorOnPrimary">@color/white</item>
 
-        <!-- Colores Secundarios (para acentos, estrellas, checkboxes, FAVs) -->
-        <item name="colorSecondary">@color/hotel_acento</item>
-        <item name="colorSecondaryVariant">@color/hotel_acento</item>
-        <item name="colorOnSecondary">@color/black</item> <!-- Color del texto sobre el color secundario -->
-
-        <!-- Colores de Fondo y Superficies -->
+        <!-- Fondo general -->
         <item name="android:colorBackground">@color/fondo_app</item>
-        <item name="colorSurface">@color/white</item> <!-- Color de las tarjetas (cards) -->
-        <item name="colorOnSurface">@color/texto_principal</item> <!-- Color del texto sobre las tarjetas -->
 
-        <!-- Color de la barra de estado -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- Barra de estado -->
+        <item name="android:statusBarColor">@color/hotel_azul_oscuro</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- Barra de navegación inferior -->
+        <item name="android:navigationBarColor">@color/hotel_azul</item>
     </style>
 
     <style name="Theme.HotelSys" parent="Base.Theme.HotelSys" />

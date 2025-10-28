@@ -5,9 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".MainActivityIndex">
 
-    <!--  Toolbar superior -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -61,7 +61,6 @@
         </RelativeLayout>
     </com.google.android.material.appbar.MaterialToolbar>
 
-    <!--  Contenido con búsqueda + lista -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -69,7 +68,6 @@
         android:layout_marginTop="?attr/actionBarSize"
         android:padding="8dp">
 
-        <!-- Bloque de búsqueda -->
         <EditText
             android:id="@+id/etBuscar"
             android:layout_width="match_parent"
@@ -80,7 +78,6 @@
             android:background="@android:drawable/edit_text"
             android:layout_marginBottom="10dp" />
 
-        <!-- Título y contador -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -108,18 +105,17 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <!--  Lista de habitaciones -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerHabitaciones"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:clipToPadding="false"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            android:paddingBottom="80dp" />
 
     </LinearLayout>
 
-    <!--  Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
