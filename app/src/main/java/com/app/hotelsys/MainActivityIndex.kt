@@ -123,8 +123,18 @@ class MainActivityIndex : AppCompatActivity() {
                 Toast.makeText(this, "Reservar ${habitacion.nombre}", Toast.LENGTH_SHORT).show()
                 Log.i("PRUEBA", "ID HABITACIÓN: ${habitacion.idHabitacion}")
 
-                var dialogo = ReservaFragment()
-                dialogo.show(supportFragmentManager, null)
+                val dialogo = ReservaFragment()
+
+                val bundle = Bundle()
+                bundle.putInt("idHabitacion", habitacion.idHabitacion)
+                bundle.putString("nombreHabitacion", habitacion.nombre)
+                bundle.putString("descripcionHabitacion", habitacion.descripcion)
+                bundle.putString("precioHabitacion", habitacion.precio)
+                bundle.putString("imagenHabitacion", habitacion.imagenUrl)
+
+                dialogo.arguments = bundle
+
+                dialogo.show(supportFragmentManager, "fragment_reserva")
             },
             onClickFavorito = { habitacion ->
                 botonFavorito(habitacion)
