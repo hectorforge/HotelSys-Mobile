@@ -18,7 +18,9 @@ import com.app.hotelsys.adapters.HabitacionAdapter
 import com.app.hotelsys.api.RetrofitClient
 import com.app.hotelsys.models.Habitacion
 import com.app.hotelsys.models.HabitacionResponse
+import com.app.hotelsys.ui.PerfilActivity
 import com.app.hotelsys.ui.ReservasActivity
+import com.app.hotelsys.ui.calificacion.CalificacionFragment
 import com.app.hotelsys.ui.reserva.ReservaFragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -101,7 +103,8 @@ class MainActivityIndex : AppCompatActivity() {
                     true
                 }
                 R.id.nav_perfil -> {
-                    Toast.makeText(this, "Mis Perfiles ", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, PerfilActivity::class.java))
+                    overridePendingTransition(0, 0)
                     true
                 }
                 else -> false
@@ -112,12 +115,14 @@ class MainActivityIndex : AppCompatActivity() {
         recyclerHabitaciones.layoutManager = LinearLayoutManager(this)
         adapter = HabitacionAdapter(
             listOf(),
-            onClickCalificar = { habitacion, imagen, position ->
-                val intent = Intent(this, CalificarActivity::class.java)
-                intent.putExtra("nombreHabitacion", habitacion.nombre)
-                intent.putExtra("imagenHabitacion", imagen)
-                intent.putExtra("posicionHabitacion", position)
-                startActivity(intent)
+            onClickCalificar = { habitacion, imagenUrl, position ->
+                val calificacionFragment = CalificacionFragment.newInstance(
+                    habitacionId = habitacion.idHabitacion,
+                    habitacionNumero = habitacion.nombre,
+                    habitacionTipo = habitacion.descripcion,
+                    habitacionImagenUrl = imagenUrl ?: ""
+                )
+                calificacionFragment.show(supportFragmentManager, "CalificacionFragment")
             },
             onClickReservar = { habitacion ->
                 Toast.makeText(this, "Reservar ${habitacion.nombre}", Toast.LENGTH_SHORT).show()
@@ -195,7 +200,7 @@ class MainActivityIndex : AppCompatActivity() {
                             descripcion = h.imagenes.firstOrNull()?.descripcion ?: "Sin descripción",
                             precio = "S/ ${h.tipoHabitacion.precioBaseNoche} / noche",
                             calificacion = "⭐ ${h.estadoHabitacion.descripcion}",
-                            imagenUrl = "http://10.0.2.2:8081/api/${h.imagenes.firstOrNull()?.url ?: ""}",
+                            imagenUrl = "http://10.0.2.2:8081${h.imagenes.firstOrNull()?.url ?: ""}",
                             fondoResId = 0 // <-- valor inicial
                         )
                     }
