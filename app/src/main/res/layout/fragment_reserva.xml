@@ -39,7 +39,7 @@
             android:gravity="center_vertical">
 
             <ImageView
-                android:id="@+id/imageView4"
+                android:id="@+id/imagenHabitacion"
                 android:layout_width="0dp"
                 android:layout_height="110dp"
                 android:layout_weight="1"
@@ -140,12 +140,13 @@
             android:layout_marginTop="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtHuespedes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
+        <!--<TextView
             android:id="@+id/textView10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -154,19 +155,23 @@
             android:layout_marginTop="24dp"
             android:textColor="#1E3C72" />
 
-        <!-- CAMPOS DE PRODUCTO / COMBOBOX -->
+
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nombre completo"
-            app:startIconDrawable="@drawable/outline_article_person_24"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="8dp"
+            android:hint="Seleccione un producto"
+            app:startIconDrawable="@drawable/outline_box_24">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <AutoCompleteTextView
+                android:id="@+id/comboProducto"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:padding="12dp" />
+        </com.google.android.material.textfield.TextInputLayout>-->
+
 
         <!-- INFORMACIÓN DEL USUARIO -->
         <TextView
@@ -249,6 +254,7 @@
                     android:textColor="#1E3C72" />
 
                 <TextView
+                    android:id="@+id/txtMonto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Monto: S/ 250.00"
@@ -256,6 +262,7 @@
                     android:layout_marginTop="8dp" />
 
                 <TextView
+                    android:id="@+id/txtImpuesto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Impuestos y tasas: S/ 25.00"
@@ -269,6 +276,7 @@
                     android:layout_marginVertical="8dp" />
 
                 <TextView
+                    android:id="@+id/txtTotalPago"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Total: S/ 275.00"
