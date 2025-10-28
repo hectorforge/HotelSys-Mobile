@@ -3,14 +3,14 @@ package com.app.hotelsys
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -43,17 +43,15 @@ class MainActivityIndex : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_index)
 
-        // ====== Vistas ======
-
+        // ====== Inicialización de vistas ======
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
         val btnMenu = findViewById<ImageButton>(R.id.btnMenu)
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
-
         recyclerHabitaciones = findViewById(R.id.recyclerHabitaciones)
         etBuscar = findViewById(R.id.etBuscar)
         tvCantidad = findViewById(R.id.tvCantidadHabitaciones)
 
-        // Marcar ítem actual en BottomNav
+        // Marcar ítem actual
         bottomNav.selectedItemId = R.id.nav_buscar
 
         // ====== Usuario actual ======
@@ -63,8 +61,8 @@ class MainActivityIndex : AppCompatActivity() {
         // ====== Menú del toolbar ======
         val popupMenu = PopupMenu(this, btnMenu)
         popupMenu.menuInflater.inflate(R.menu.menu_toolbar, popupMenu.menu)
-        btnMenu.setOnClickListener { popupMenu.show() }
         popupMenu.menu.findItem(R.id.nav_micuenta).title = "Mi cuenta ($emailUsuario)"
+        btnMenu.setOnClickListener { popupMenu.show() }
 
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
@@ -74,8 +72,7 @@ class MainActivityIndex : AppCompatActivity() {
                 }
                 R.id.nav_logout -> {
                     FirebaseAuth.getInstance().signOut()
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, MainActivity::class.java))
                     finish()
                     true
                 }
@@ -83,15 +80,10 @@ class MainActivityIndex : AppCompatActivity() {
             }
         }
 
-
-
         // ====== Bottom Navigation ======
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_buscar -> {
-                    //
-                    true
-                }
+                R.id.nav_buscar -> true
                 R.id.nav_favoritos -> {
                     startActivity(Intent(this, FavoritosActivity::class.java))
                     overridePendingTransition(0, 0)
@@ -111,11 +103,11 @@ class MainActivityIndex : AppCompatActivity() {
             }
         }
 
-        // ====== RecyclerView ======
+        // ====== Configurar RecyclerView ======
         recyclerHabitaciones.layoutManager = LinearLayoutManager(this)
         adapter = HabitacionAdapter(
             listOf(),
-            onClickCalificar = { habitacion, imagenUrl, position ->
+            onClickCalificar = { habitacion, imagenUrl, _ ->
                 val calificacionFragment = CalificacionFragment.newInstance(
                     habitacionId = habitacion.idHabitacion,
                     habitacionNumero = habitacion.nombre,
@@ -125,45 +117,53 @@ class MainActivityIndex : AppCompatActivity() {
                 calificacionFragment.show(supportFragmentManager, "CalificacionFragment")
             },
             onClickReservar = { habitacion ->
-                Toast.makeText(this, "Reservar ${habitacion.nombre}", Toast.LENGTH_SHORT).show()
-                Log.i("PRUEBA", "ID HABITACIÓN: ${habitacion.idHabitacion}")
-
                 val dialogo = ReservaFragment()
-
-                val bundle = Bundle()
-                bundle.putInt("idHabitacion", habitacion.idHabitacion)
-                bundle.putString("nombreHabitacion", habitacion.nombre)
-                bundle.putString("descripcionHabitacion", habitacion.descripcion)
-                bundle.putString("precioHabitacion", habitacion.precio)
-                bundle.putString("imagenHabitacion", habitacion.imagenUrl)
-
+                val bundle = Bundle().apply {
+                    putInt("idHabitacion", habitacion.idHabitacion)
+                    putString("nombreHabitacion", habitacion.nombre)
+                    putString("descripcionHabitacion", habitacion.descripcion)
+                    putString("precioHabitacion", habitacion.precio)
+                    putString("imagenHabitacion", habitacion.imagenUrl)
+                }
                 dialogo.arguments = bundle
-
                 dialogo.show(supportFragmentManager, "fragment_reserva")
             },
-            onClickFavorito = { habitacion ->
-                botonFavorito(habitacion)
-            }
+            onClickFavorito = { habitacion -> botonFavorito(habitacion) }
         )
         recyclerHabitaciones.adapter = adapter
 
         // ====== Cargar habitaciones ======
         cargarHabitacionesDesdeAPI()
 
-        // ====== Búsqueda ======
+        // ====== Búsqueda personalizada ======
         etBuscar.doOnTextChanged { texto, _, _, _ ->
             val query = texto.toString().trim().lowercase()
-            val filtradas = listaHabitaciones.filter {
-                it.nombre.lowercase().contains(query) ||
-                        it.descripcion.lowercase().contains(query) ||
-                        it.precio.lowercase().contains(query)
+            val filtradas = listaHabitaciones.filter { habitacion ->
+                val coincideNombre = habitacion.nombre.lowercase().contains(query)
+                val numero = habitacion.nombre
+                    .lowercase()
+                    .substringAfter("habitación ")
+                    .substringBefore(" ")
+                    .trim()
+                val coincideNumero = numero == query
+                val precioTexto = habitacion.precio
+                    .lowercase()
+                    .replace("s/", "")
+                    .replace("/ noche", "")
+                    .replace(" ", "")
+                    .trim()
+                val coincidePrecio = query.toDoubleOrNull()?.let { q ->
+                    precioTexto.toDoubleOrNull()?.let { p -> p == q } ?: false
+                } ?: false
+
+                coincideNombre || coincideNumero || coincidePrecio
             }
             adapter.updateData(filtradas)
             tvCantidad.text = "${filtradas.size} encontradas"
         }
     }
 
-    // === Guardar o eliminar favorito ===
+    // ====== Añadir o eliminar favoritos ======
     private fun botonFavorito(habitacion: Habitacion) {
         val prefs = getSharedPreferences("favoritos", Context.MODE_PRIVATE)
         val gson = Gson()
@@ -182,7 +182,7 @@ class MainActivityIndex : AppCompatActivity() {
         prefs.edit().putString("lista", gson.toJson(lista)).apply()
     }
 
-    // === Cargar habitaciones desde API ===
+    // ====== Cargar datos desde API ======
     private fun cargarHabitacionesDesdeAPI() {
         val call = RetrofitClient.instance.getHabitaciones()
         call.enqueue(object : Callback<List<HabitacionResponse>> {
@@ -192,8 +192,7 @@ class MainActivityIndex : AppCompatActivity() {
             ) {
                 if (response.isSuccessful && response.body() != null) {
                     val habitacionesApi = response.body() ?: emptyList()
-
-                    listaHabitaciones = habitacionesApi.mapIndexed { index, h ->
+                    listaHabitaciones = habitacionesApi.map { h ->
                         Habitacion(
                             idHabitacion = h.id,
                             nombre = "Habitación ${h.numero} (${h.tipoHabitacion.descripcion})",
@@ -201,21 +200,17 @@ class MainActivityIndex : AppCompatActivity() {
                             precio = "S/ ${h.tipoHabitacion.precioBaseNoche} / noche",
                             calificacion = "⭐ ${h.estadoHabitacion.descripcion}",
                             imagenUrl = "http://10.0.2.2:8081${h.imagenes.firstOrNull()?.url ?: ""}",
-                            fondoResId = 0 // <-- valor inicial
+                            fondoResId = 0
                         )
                     }
-
                     adapter.updateData(listaHabitaciones)
                     tvCantidad.text = "${listaHabitaciones.size} encontradas"
-
-                    Log.i("API_RESPONSE", "Habitaciones cargadas: ${listaHabitaciones.size}")
                 } else {
                     Toast.makeText(
                         this@MainActivityIndex,
-                        "Error en respuesta del servidor (${response.code()})",
+                        "Error de servidor (${response.code()})",
                         Toast.LENGTH_SHORT
                     ).show()
-                    Log.e("API_ERROR", "Código de error: ${response.code()}")
                 }
             }
 
@@ -225,7 +220,6 @@ class MainActivityIndex : AppCompatActivity() {
                     "Error de conexión: ${t.localizedMessage}",
                     Toast.LENGTH_LONG
                 ).show()
-                Log.e("API_ERROR", "Fallo al conectar con API", t)
             }
         })
     }
