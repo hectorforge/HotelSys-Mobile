@@ -1,6 +1,5 @@
 package com.app.hotelsys
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.EditText
@@ -16,6 +15,7 @@ import com.app.hotelsys.api.RetrofitClient
 import com.app.hotelsys.helper.AlertaHelper
 import com.app.hotelsys.models.Habitacion
 import com.app.hotelsys.models.HabitacionResponse
+import com.app.hotelsys.repository.FavoritosRepository
 import com.app.hotelsys.ui.PerfilActivity
 import com.app.hotelsys.ui.ReservasActivity
 import com.app.hotelsys.ui.calificacion.CalificacionFragment
@@ -23,8 +23,6 @@ import com.app.hotelsys.ui.reserva.ReservaFragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,6 +34,8 @@ class MainActivityIndex : AppCompatActivity() {
     private lateinit var tvCantidad: TextView
     private lateinit var etBuscar: EditText
     private var listaHabitaciones: List<Habitacion> = emptyList()
+    private lateinit var favoritosRepository: FavoritosRepository
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -159,25 +159,20 @@ class MainActivityIndex : AppCompatActivity() {
             adapter.updateData(filtradas)
             tvCantidad.text = "${filtradas.size} encontradas"
         }
+
+        // ====== Inicializar FavoritosRepository ======
+        favoritosRepository = FavoritosRepository(this)
     }
 
     // ====== Añadir o eliminar favoritos ======
     private fun botonFavorito(habitacion: Habitacion) {
-        val prefs = getSharedPreferences("favoritos", Context.MODE_PRIVATE)
-        val gson = Gson()
-        val json = prefs.getString("lista", "[]")
-        val type = object : TypeToken<MutableList<Habitacion>>() {}.type
-        val lista: MutableList<Habitacion> = gson.fromJson(json, type)
-
-        if (lista.any { it.nombre == habitacion.nombre }) {
-            lista.removeAll { it.nombre == habitacion.nombre }
-            AlertaHelper.mostrarAlertaToast("Eliminado de favoritos ❤️", this)
+        if (favoritosRepository.esFavorito(habitacion.idHabitacion)) {
+            favoritosRepository.eliminarFavorito(habitacion.idHabitacion)
+            AlertaHelper.mostrarAlertaToast("Eliminado de favoritos 💔", this)
         } else {
-            lista.add(habitacion)
+            favoritosRepository.agregarFavorito(habitacion)
             AlertaHelper.mostrarAlertaToast("Agregado a favoritos ❤️", this)
         }
-
-        prefs.edit().putString("lista", gson.toJson(lista)).apply()
     }
 
     // ====== Cargar datos desde API ======

@@ -16,7 +16,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import android.widget.LinearLayout
 import android.widget.RatingBar
-//import androidx.glance.visibility
 import com.app.hotelsys.BuildConfig
 import com.app.hotelsys.repository.CalificacionRepository
 
