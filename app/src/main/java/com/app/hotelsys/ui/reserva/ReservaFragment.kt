@@ -8,10 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
+import androidx.core.net.ParseException
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.hotelsys.databinding.FragmentReservaBinding
+import com.app.hotelsys.helper.AlertaHelper
 import com.app.hotelsys.models.ProductoReservaRequest
 import com.app.hotelsys.models.ProductoResponse
 import com.app.hotelsys.models.ReservaRequest
@@ -20,9 +21,9 @@ import com.bumptech.glide.Glide
 import com.example.repaso_recycler.adaptador.ProductosReservaAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.gson.GsonBuilder
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -182,6 +183,10 @@ class ReservaFragment : BottomSheetDialogFragment() {
             { _, y, m, d ->
                 val fecha = String.format("%04d-%02d-%02d", y, m + 1, d)
                 campo.setText(fecha)
+
+                val textInputLayout = campo.parent.parent as? TextInputLayout
+                textInputLayout?.error = null
+
                 calcularPago() // recalcular montos cuando cambie una fecha
             },
             year, month, day
@@ -205,7 +210,8 @@ class ReservaFragment : BottomSheetDialogFragment() {
         if (fechaInicio == null || fechaFin == null) return 0
 
         val diff = fechaFin.time - fechaInicio.time
-        val dias = (diff / (1000 * 60 * 60 * 24)).toInt() + 1  // +1 para incluir ambos días
+        val dias = (diff / (1000 * 60 * 60 * 24)).toInt()
+        // Quito el +1 porque no es intuitivo el conteo de las noches
         return if (dias > 0) dias else 0
     }
 
@@ -258,7 +264,7 @@ class ReservaFragment : BottomSheetDialogFragment() {
 
                 } else {
                     Log.e("PROD_ERROR", "Error al obtener productos: ${response.code()}")
-                    Toast.makeText(context, "No se pudieron cargar los productos", Toast.LENGTH_SHORT).show()
+                    AlertaHelper.mostrarAlerta("Error", "No se pudieron cargar los productos", requireContext())
                 }
             } catch (e: Exception) {
                 Log.e("PROD_EXCEPTION", "Excepción al obtener productos: ${e.localizedMessage}")
@@ -283,6 +289,11 @@ class ReservaFragment : BottomSheetDialogFragment() {
 
     // --- Acción principal: crear reserva ---
     private fun crearReserva() {
+        // Si ambas validaciones son correctas, procedemos a crear la reserva
+        if (!(validarFechas() && validarHuespedes())) {
+            return
+        }
+
         // Construye objeto ReservaRequest y lo envía via repositorio; muestra mensajes según resultado
         val idHabitacion = arguments?.getInt("idHabitacion") ?: 0
         val fechaIngreso = binding.editTextIngreso.text.toString()
@@ -305,9 +316,6 @@ class ReservaFragment : BottomSheetDialogFragment() {
             productos = productosParaBackend
         )
 
-        val gson = GsonBuilder().setPrettyPrinting().create()
-        Log.i("JSON_ENVIADO", gson.toJson(reserva))
-
         viewLifecycleOwner.lifecycleScope.launch {
             val response = repository.crearReserva(reserva)
             if (response.isSuccessful) {
@@ -316,21 +324,14 @@ class ReservaFragment : BottomSheetDialogFragment() {
                 binding.editTextSalida.setText("")
                 binding.txtHuespedes.setText("")
 
-                Toast.makeText(
-                    requireContext(),
-                    "Reserva agregada correctamente",
-                    Toast.LENGTH_SHORT
-                ).show()
+                AlertaHelper.mostrarAlerta("Éxito", "Reserva agregada correctamente", requireContext())
 
                 Log.i("RESERVA", "Reserva creada con ID: ${response.body()?.id}")
                 dismiss()
             } else {
                 val errorBody = response.errorBody()?.string()
-                Toast.makeText(
-                    requireContext(),
-                    "La habitación se encuentra ocupada",
-                    Toast.LENGTH_SHORT
-                ).show()
+
+                AlertaHelper.mostrarAlerta("Error", "La habitación se encuentra ocupada", requireContext())
                 Log.e("ERROR", "Falló la reserva: $errorBody")
             }
         }
@@ -379,7 +380,8 @@ class ReservaFragment : BottomSheetDialogFragment() {
         val textoSeleccionado = binding.comboProducto.text.toString()
 
         if (textoSeleccionado.isBlank()) {
-            Toast.makeText(context, "Por favor, seleccione un producto", Toast.LENGTH_SHORT).show()
+
+            AlertaHelper.mostrarAlertaToast("Por favor, seleccione un producto", requireContext())
             return
         }
 
@@ -388,28 +390,105 @@ class ReservaFragment : BottomSheetDialogFragment() {
         }
 
         if (productoEncontrado != null) {
-            val nuevoProductoParaReserva = ProductoReservaRequest(
-                productoId = productoEncontrado.id,
-                cantidad = 1, // Siempre empezamos agregando 1
-                nombreProducto = productoEncontrado.nombreProducto,
-                precioUnitarioGrabado = productoEncontrado.precio
-            )
+            val productoExistente = listaProductosSeleccionados.find { it.productoId == productoEncontrado.id }
 
-            listaProductosSeleccionados.add(nuevoProductoParaReserva)
-
-            productosAdapter.notifyItemInserted(listaProductosSeleccionados.size - 1)
+            if (productoExistente != null) {
+                productoExistente.cantidad++
+                val index = listaProductosSeleccionados.indexOf(productoExistente)
+                productosAdapter.notifyItemChanged(index)
+                AlertaHelper.mostrarAlertaToast("Cantidad de ${productoExistente.nombreProducto} aumentada.", requireContext())
+            } else {
+                val nuevoProductoParaReserva = ProductoReservaRequest(
+                    productoId = productoEncontrado.id,
+                    cantidad = 1,
+                    nombreProducto = productoEncontrado.nombreProducto,
+                    precioUnitarioGrabado = productoEncontrado.precio
+                )
+                listaProductosSeleccionados.add(nuevoProductoParaReserva)
+                productosAdapter.notifyItemInserted(listaProductosSeleccionados.size - 1)
+                AlertaHelper.mostrarAlertaToast("${productoEncontrado.nombreProducto} agregado.", requireContext())
+            }
 
             binding.comboProducto.text.clear()
 
             calcularPago()
 
-            Toast.makeText(context, "${productoEncontrado.nombreProducto} agregado.", Toast.LENGTH_SHORT).show()
+            AlertaHelper.mostrarAlertaToast("${productoEncontrado.nombreProducto} agregado.", requireContext())
 
         } else {
-            Toast.makeText(context, "Producto no válido. Por favor, seleccione uno de la lista.", Toast.LENGTH_LONG).show()
+            AlertaHelper.mostrarAlerta("Error", "Producto no válido. Por favor, seleccione uno de la lista.", requireContext())
         }
     }
 
+    // --- Validaciones ---
+    private fun validarHuespedes(): Boolean {
+        val huespedesStr = binding.txtHuespedes.text.toString()
+        if (huespedesStr.isBlank()) {
+            binding.tilHuespedes.error = "Debe ingresar el número de huéspedes"
+            return false
+        }
+
+        val huespedes = huespedesStr.toIntOrNull()
+        if (huespedes == null || huespedes <= 0) {
+            binding.tilHuespedes.error = "El número de huéspedes debe ser mayor que 0"
+            return false
+        }
+
+        binding.tilHuespedes.error = null
+        return true
+    }
+
+    private fun validarFechas(): Boolean {
+        val fechaIngresoStr = binding.editTextIngreso.text.toString()
+        val fechaSalidaStr = binding.editTextSalida.text.toString()
+
+        if (fechaIngresoStr.isBlank()) {
+            binding.tilTextIngreso.error = "Debe seleccionar la fecha de ingreso"
+            binding.tilTextSalida.error = null
+
+            return false
+        }
+
+        if (fechaSalidaStr.isBlank()) {
+            binding.tilTextSalida.error = "Debe seleccionar la fecha de salida"
+            binding.tilTextIngreso.error = null
+
+            return false
+        }
+
+        try {
+            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val fechaIngreso = sdf.parse(fechaIngresoStr)
+            val fechaSalida = sdf.parse(fechaSalidaStr)
+
+            val calendarioHoy = Calendar.getInstance()
+            calendarioHoy.set(Calendar.HOUR_OF_DAY, 0)
+            calendarioHoy.set(Calendar.MINUTE, 0)
+            calendarioHoy.set(Calendar.SECOND, 0)
+            calendarioHoy.set(Calendar.MILLISECOND, 0)
+            val hoy = calendarioHoy.time
+
+            if (fechaIngreso.before(hoy)) {
+                binding.tilTextIngreso.error = "La fecha de ingreso es inválida."
+                binding.tilTextSalida.error = null
+                return false
+            }
+
+            if (fechaSalida.before(fechaIngreso) || fechaSalida == fechaIngreso) {
+                binding.tilTextIngreso.error = null
+                binding.tilTextSalida.error = "La fecha de salida debe ser posterior a la de ingreso"
+                return false
+            }
+        } catch (e: ParseException) {
+            AlertaHelper.mostrarAlerta("Error", "Error al validar fechas", requireContext())
+            Log.e("ValidacionFecha", "Error al parsear fechas", e)
+            return false
+        }
+
+        binding.tilTextIngreso.error = null
+        binding.tilTextSalida.error = null
+        return true
+    }
 }
 
 

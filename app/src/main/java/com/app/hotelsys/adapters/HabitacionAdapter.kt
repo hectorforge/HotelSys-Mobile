@@ -16,13 +16,16 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import android.widget.LinearLayout
 import android.widget.RatingBar
+//import androidx.glance.visibility
+import com.app.hotelsys.BuildConfig
 import com.app.hotelsys.repository.CalificacionRepository
 
 class HabitacionAdapter(
     var listaHabitaciones: List<Habitacion>,
     private val onClickCalificar: (Habitacion, String?, Int) -> Unit, // enviamos posición + imagen
     private val onClickReservar: (Habitacion) -> Unit,
-    private val onClickFavorito: (Habitacion) -> Unit
+    private val onClickFavorito: (Habitacion) -> Unit,
+    private val mostrarBotones: Boolean = true
 ) : RecyclerView.Adapter<HabitacionAdapter.HabitacionViewHolder>() {
 
     private val favoritos = mutableSetOf<Int>() // posiciones favoritas
@@ -39,6 +42,7 @@ class HabitacionAdapter(
         val btnCalificar: Button = itemView.findViewById(R.id.btnCalificar)
         val btnReservar: Button = itemView.findViewById(R.id.btnReservar)
         val btnFavorito: ImageButton = itemView.findViewById(R.id.btnFavorito)
+        val llBotones: LinearLayout = itemView.findViewById(R.id.ll_botones)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitacionViewHolder {
@@ -92,7 +96,7 @@ class HabitacionAdapter(
 
         // Construir URL de imagen si existe
         val imagenUrlCompleta = habitacion.imagenUrl?.takeIf { it.isNotBlank() }?.let {
-            if (it.startsWith("http")) it else "http://10.0.2.2:8081/api/$it"
+            if (it.startsWith("http")) it else "${BuildConfig.BASE_IP}/api/$it"
         }
 
         // --- Construye imagen de carga ---
@@ -110,6 +114,13 @@ class HabitacionAdapter(
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .centerCrop()
             .into(holder.imgHabitacion)
+
+        // Mostrar u ocultar botones
+        if (mostrarBotones) {
+            holder.llBotones.visibility = View.VISIBLE
+        } else {
+            holder.llBotones.visibility = View.GONE
+        }
 
         // Botón Calificar → enviamos posición + imagen
         holder.btnCalificar.setOnClickListener {

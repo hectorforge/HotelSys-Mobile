@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.hotelsys.adapters.calificacion.ResenaCalificarAdapter
 import com.app.hotelsys.databinding.FragmentCalificacionBinding
+import com.app.hotelsys.helper.AlertaHelper
 import com.app.hotelsys.models.calificacion.CalificacionCalificar
 import com.app.hotelsys.repository.CalificacionRepository
 import com.bumptech.glide.Glide
@@ -112,7 +112,7 @@ class CalificacionFragment : BottomSheetDialogFragment() {
                 actualizarListaResenas(calificaciones)
             },
             onFailure = {
-                Toast.makeText(context, "Error al cargar reseñas", Toast.LENGTH_SHORT).show()
+                AlertaHelper.mostrarAlerta("Error", "No se pudieron cargar las reseñas de la habitación.", requireContext())
             }
         )
     }
@@ -182,7 +182,7 @@ class CalificacionFragment : BottomSheetDialogFragment() {
         calificacionRepository.guardarCalificacion(
             calificacion = nuevaCalificacion,
             onSuccess = {
-                Toast.makeText(context, "¡Gracias por tu reseña!", Toast.LENGTH_LONG).show()
+                AlertaHelper.mostrarAlerta("Éxito", "Tu calificación ha sido guardada correctamente.", requireContext())
                 dismiss()
             },
             onFailure = { exception ->

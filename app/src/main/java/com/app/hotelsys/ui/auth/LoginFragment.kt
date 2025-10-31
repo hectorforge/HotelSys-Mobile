@@ -5,13 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.app.hotelsys.MainActivity
 import com.app.hotelsys.MainActivityIndex
 import com.app.hotelsys.R
 import com.app.hotelsys.databinding.FragmentLoginBinding
+import com.app.hotelsys.helper.AlertaHelper
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginFragment : Fragment() {
@@ -37,7 +36,7 @@ class LoginFragment : Fragment() {
             val password = binding.editTextPassword.text.toString().trim()
 
             if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(requireContext(), "Completa todos los campos", Toast.LENGTH_SHORT).show()
+                AlertaHelper.mostrarAlerta("Error", "Completa todos los campos", requireContext())
                 return@setOnClickListener
             }
 
@@ -48,7 +47,7 @@ class LoginFragment : Fragment() {
                     requireActivity().finish()
                 }
                 .addOnFailureListener {
-                    Toast.makeText(requireContext(), "Error: ${it.localizedMessage}", Toast.LENGTH_SHORT).show()
+                    AlertaHelper.mostrarAlerta("Error", "Error al iniciar sesión: ${it.localizedMessage}", requireContext())
                 }
         }
 

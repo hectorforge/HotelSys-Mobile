@@ -97,7 +97,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/fechaEntrada"
-                app:startIconDrawable="@drawable/ic_calendar_today">
+                app:startIconDrawable="@drawable/ic_calendar_today"
+                android:id="@+id/til_text_ingreso">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextIngreso"
@@ -118,7 +119,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/fechaSalida"
-                app:startIconDrawable="@drawable/ic_calendar_today">
+                app:startIconDrawable="@drawable/ic_calendar_today"
+                android:id="@+id/til_text_salida" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextSalida"
@@ -137,7 +139,9 @@
             android:layout_height="wrap_content"
             android:hint="@string/numeroHuespedes"
             app:startIconDrawable="@drawable/outline_bed_24"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:id="@+id/til_Huespedes"
+            >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtHuespedes"
@@ -293,7 +297,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:textSize="14sp"
-                    tools:text="ss" />
+                    tools:text="Número de noches" />
 
                 <TextView
                     android:id="@+id/txtMonto"
@@ -307,7 +311,7 @@
                     android:id="@+id/txtImpuesto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Impuestos y tasas: S/ 25.00"
+                    android:text="Impuestos y tasas: S/. 0.00"
                     android:textSize="14sp"
                     android:layout_marginTop="4dp" />
 
@@ -321,7 +325,7 @@
                     android:id="@+id/txtTotalPago"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Total: S/ 275.00"
+                    android:text="Total: S/. 0.00"
                     android:textStyle="bold"
                     android:textColor="#1E3C72"
                     android:textSize="15sp" />

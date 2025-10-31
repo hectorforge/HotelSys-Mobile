@@ -2,7 +2,7 @@ package com.app.hotelsys.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -12,9 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.hotelsys.MainActivityIndex
 import com.app.hotelsys.adapters.RecyclerViewAdapterReserva
 import com.app.hotelsys.databinding.ActivityRecyclerReservasBinding
+import com.app.hotelsys.helper.AlertaHelper
 import com.app.hotelsys.models.ReservaResponse
 import com.app.hotelsys.retrofit.RetrofitReserva
 import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.GsonBuilder
 import kotlinx.coroutines.launch
 
 /**
@@ -104,21 +106,17 @@ class ReservasActivity : AppCompatActivity() {
                     reservasList.clear()
                     reservasList.addAll(response.body() ?: emptyList())
                     adapter.notifyDataSetChanged()
+
+                    val gson = GsonBuilder().setPrettyPrinting().create()
+                    Log.i("ReservasActivity", "JSON Recibido: ${gson.toJson(reservasList)}")
+
                 } else {
                     // Manejo básico de errores HTTP
-                    Toast.makeText(
-                        this@ReservasActivity,
-                        "Error: ${response.code()}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    AlertaHelper.mostrarAlerta("Error al obtener reservas", "Código de error: ${response.code()}", this@ReservasActivity)
                 }
             } catch (e: Exception) {
                 // Manejo de excepción de red u otros errores
-                Toast.makeText(
-                    this@ReservasActivity,
-                    "Error de conexión: ${e.localizedMessage}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                AlertaHelper.mostrarAlerta("Error de conexión", "No se pudo conectar con el servidor. \nError: ${e.localizedMessage}", this@ReservasActivity)
             }
         }
     }

@@ -3,10 +3,10 @@ package com.app.hotelsys.ui
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.app.hotelsys.databinding.ActivityPerfilBinding
+import com.app.hotelsys.helper.AlertaHelper
 import com.app.hotelsys.models.Usuario
 import com.app.hotelsys.ui.auth.AuthActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -47,7 +47,8 @@ class PerfilActivity : AppCompatActivity() {
         val user = auth.currentUser
 
         if (user == null) {
-            Toast.makeText(this, "No hay usuario autenticado", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this, "No hay usuario autenticado", Toast.LENGTH_SHORT).show()
+            AlertaHelper.mostrarAlerta("Sesión expirada", "Por favor, inicia sesión de nuevo.", this)
             irALogin()
             return
         }
@@ -74,7 +75,7 @@ class PerfilActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 binding.progressBar.visibility = View.GONE
                 binding.contentLayout.visibility = View.VISIBLE
-                Toast.makeText(this, "Error al cargar datos: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+                AlertaHelper.mostrarAlerta("Error", "No se pudieron cargar los datos del usuario.\nError: ${e.localizedMessage}", this)
             }
     }
 
@@ -102,7 +103,7 @@ class PerfilActivity : AppCompatActivity() {
         }
 
         binding.cardEditarPerfil.setOnClickListener {
-            Toast.makeText(this, "Función de editar perfil próximamente", Toast.LENGTH_SHORT).show()
+            AlertaHelper.mostrarAlertaToast("Función de editar perfil próximamente", this)
         }
 
         binding.cardCambiarPassword.setOnClickListener {
@@ -123,7 +124,7 @@ class PerfilActivity : AppCompatActivity() {
 
     private fun cerrarSesion() {
         auth.signOut()
-        Toast.makeText(this, "Sesión cerrada exitosamente", Toast.LENGTH_SHORT).show()
+        AlertaHelper.mostrarAlerta("Sesión cerrada", "Has cerrado sesión exitosamente.", this)
         irALogin()
     }
 
@@ -131,7 +132,7 @@ class PerfilActivity : AppCompatActivity() {
         val email = auth.currentUser?.email
 
         if (email.isNullOrEmpty()) {
-            Toast.makeText(this, "No se encontró email asociado", Toast.LENGTH_SHORT).show()
+            AlertaHelper.mostrarAlerta("Error", "No se encontró un correo electrónico asociado a tu cuenta.", this)
             return
         }
 
@@ -141,10 +142,10 @@ class PerfilActivity : AppCompatActivity() {
             .setPositiveButton("Enviar") { _, _ ->
                 auth.sendPasswordResetEmail(email)
                     .addOnSuccessListener {
-                        Toast.makeText(this, "Correo enviado. Revisa tu bandeja de entrada", Toast.LENGTH_LONG).show()
+                        AlertaHelper.mostrarAlerta("Correo enviado", "Se ha enviado un correo para restablecer tu contraseña. Revisa tu bandeja de entrada.", this)
                     }
                     .addOnFailureListener { e ->
-                        Toast.makeText(this, "Error: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+                        AlertaHelper.mostrarAlerta("Error", "No se pudo enviar el correo de restablecimiento.\nError: ${e.localizedMessage}", this)
                     }
             }
             .setNegativeButton("Cancelar", null)

@@ -22,4 +22,5 @@
     <string name="aumentar_cantidad">Aumentar cantidad</string>
     <string name="eliminar_producto">Eliminar producto</string>
     <string name="disminuir_cantidad">Disminuir cantidad</string>
+    <string name="continuar">Continuar</string>
 </resources>

@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         val txtFechaNacimiento = findViewById<TextView>(R.id.txtFechaNacimiento)
         val txtEmail = findViewById<TextView>(R.id.txtEmail)
         val txtFechaRegistro = findViewById<TextView>(R.id.txtFechaRegistro)
-        val btnLogout = findViewById<Button>(R.id.btnLogout)
+        val btnContinuar = findViewById<Button>(R.id.btnContinuar)
 
         // Obtener datos del usuario desde Firestore
         val uid = user.uid
@@ -61,10 +61,11 @@ class MainActivity : AppCompatActivity() {
                 txtBienvenida.text = "Error al obtener los datos del usuario."
             }
 
-        // Botón cerrar sesión
-        btnLogout.setOnClickListener {
-            auth.signOut()
-            startActivity(Intent(this, AuthActivity::class.java))
+        // Botón continuar
+        btnContinuar.setOnClickListener {
+//            auth.signOut()
+//            startActivity(Intent(this, AuthActivity::class.java))
+            startActivity(Intent(this, MainActivityIndex::class.java))
             finish()
         }
     }

@@ -4,12 +4,12 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.app.hotelsys.R
 import com.app.hotelsys.databinding.ItemReservaBinding
+import com.app.hotelsys.helper.AlertaHelper
 import com.app.hotelsys.models.ReservaResponse
 import com.app.hotelsys.retrofit.RetrofitReserva
 import com.google.android.material.button.MaterialButton
@@ -17,7 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.net.URLEncoder
+
 
 class RecyclerViewAdapterReserva :
     RecyclerView.Adapter<RecyclerViewAdapterReserva.ViewHolder>() {
@@ -45,11 +45,7 @@ class RecyclerViewAdapterReserva :
 
         init {
             view.setOnClickListener {
-                Toast.makeText(
-                    context,
-                    "Reserva: ${binding.tvHabitacion.text}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                AlertaHelper.mostrarAlertaToast("Reserva: ${binding.tvHabitacion.text}", context)
             }
         }
     }
@@ -72,10 +68,23 @@ class RecyclerViewAdapterReserva :
             "Hab. ${it.habitacion.numero} - ${it.habitacion.tipoHabitacion.descripcion}"
         } ?: ""
 
-        val productosTexto = reserva.productos.takeIf { it.isNotEmpty() }
-            ?.joinToString(", ") { it.producto.nombreProducto } ?: ""
-        binding.tvProductos.text =
-            if (productosTexto.isNotEmpty()) "Productos: $productosTexto" else ""
+//        val productosTexto = reserva.productos.takeIf { it.isNotEmpty() }
+//            ?.joinToString(", ") { it.producto.nombreProducto } ?: ""
+//        binding.tvProductos.text =
+//            if (productosTexto.isNotEmpty()) "Productos: $productosTexto" else ""
+
+        if (reserva.productos.isNotEmpty()) {
+            val productosTexto = "Productos adicionales: \n" +
+                    reserva.productos.joinToString(separator = "\n") { producto ->
+                        "${producto.cantidad} x ${producto.producto.nombreProducto}"
+                    }
+            holder.binding.tvProductos.text = productosTexto
+        } else {
+            // 4. Si no hay productos, ocultamos el LinearLayout completo para que no ocupe espacio.
+            holder.binding.tvProductos.text = "Productos adicionales: Ninguno"
+        }
+
+
 
         val colorEstado = when (reserva.estadoReserva.descripcion.lowercase()) {
             "pendiente" -> R.color.estado_pendiente
@@ -109,30 +118,24 @@ class RecyclerViewAdapterReserva :
                 val response = RetrofitReserva.api.cancelarReservaPorIdYEmail(idReserva, emailCliente)
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
-                        Toast.makeText(
-                            context,
-                            "Reserva cancelada exitosamente",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        AlertaHelper.mostrarAlerta("Reserva Cancelada",
+                            "La reserva ha sido cancelada correctamente.",
+                            context)
                         reservas[position].estadoReserva.descripcion = "Cancelada"
                         notifyItemChanged(position)
                         onReservaCancelada()
                     } else {
                         val errorMsg = response.errorBody()?.string() ?: "Error desconocido"
-                        Toast.makeText(
-                            context,
-                            "Error: ${response.code()} - $errorMsg",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        AlertaHelper.mostrarAlerta("Error al cancelar",
+                            "No se pudo cancelar la reserva. \nError: ${response.code()} - $errorMsg.",
+                            context)
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(
-                        context,
-                        "Error de conexión: ${e.message}",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    AlertaHelper.mostrarAlerta("Error de conexión",
+                        "No se pudo cancelar la reserva. \nError: ${e.message}",
+                        context)
                 }
             }
         }

@@ -8,12 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.app.hotelsys.R
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.app.hotelsys.MainActivity
 import com.app.hotelsys.databinding.FragmentRegisterBinding
+import com.app.hotelsys.helper.AlertaHelper
 import com.app.hotelsys.models.ClienteRequest
 import com.app.hotelsys.models.Usuario
 import com.app.hotelsys.retrofit.RetrofitInstance
@@ -86,19 +86,19 @@ class RegisterFragment : Fragment() {
             if (nombre.isEmpty() || apellido.isEmpty() || fechaNacimiento.isEmpty() ||
                 correo.isEmpty() || password.isEmpty() || telefono.isEmpty() || dni.isEmpty()
             ) {
-                Toast.makeText(requireContext(), "Completa todos los campos", Toast.LENGTH_SHORT).show()
+                AlertaHelper.mostrarAlerta("Error de validación", "Por favor, completa todos los campos del formulario.", requireContext())
                 return@setOnClickListener
             }
 
             // Validar formato del DNI (8 dígitos)
             if (!dni.matches(Regex("^\\d{8}$"))) {
-                Toast.makeText(requireContext(), "El DNI debe tener exactamente 8 dígitos", Toast.LENGTH_SHORT).show()
+                AlertaHelper.mostrarAlerta("Error de validación", "El DNI debe tener exactamente 8 dígitos.", requireContext())
                 return@setOnClickListener
             }
 
             // Validar formato del teléfono (9 dígitos comenzando con 9)
             if (!telefono.matches(Regex("^9\\d{8}$"))) {
-                Toast.makeText(requireContext(), "El número de teléfono debe tener 9 dígitos y empezar con 9", Toast.LENGTH_SHORT).show()
+                AlertaHelper.mostrarAlerta("Error de validación", "El número de teléfono debe tener 9 dígitos y empezar con 9.", requireContext())
                 return@setOnClickListener
             }
 
@@ -147,28 +147,28 @@ class RegisterFragment : Fragment() {
                                     val response = RetrofitInstance.api.createCliente(request)
 
                                     if (response.isSuccessful) {
-                                        Toast.makeText(requireContext(), "Cliente registrado en servidor", Toast.LENGTH_SHORT).show()
+                                        AlertaHelper.mostrarAlerta("Registro exitoso", "El usuario ha sido registrado correctamente.", requireContext())
                                     } else {
-                                        Toast.makeText(requireContext(), "Error al registrar en servidor: ${response.code()}", Toast.LENGTH_SHORT).show()
+                                        AlertaHelper.mostrarAlerta("Error de registro", "No se pudo registrar el usuario en el servidor. \nCódigo de error: ${response.code()}", requireContext())
                                     }
 
                                     // Registro completo, redirigir a MainActivity
-                                    Toast.makeText(requireContext(), "Registro exitoso", Toast.LENGTH_SHORT).show()
+//                                    Toast.makeText(requireContext(), "Registro exitoso", Toast.LENGTH_SHORT).show()
                                     startActivity(Intent(requireContext(), MainActivity::class.java))
                                     requireActivity().finish()
 
                                 } catch (e: Exception) {
                                     Log.i("TEST_CONEXION", "Error: ${e.localizedMessage}")
-                                    Toast.makeText(requireContext(), "Error conexión API: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+                                    AlertaHelper.mostrarAlerta("Error de conexión API", "No se pudo conectar con el servidor. \nError: ${e.localizedMessage}", requireContext())
                                 }
                             }
                         }
                         .addOnFailureListener { e ->
-                            Toast.makeText(requireContext(), "Error al guardar: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+                            AlertaHelper.mostrarAlerta("Error de Firestore", "No se pudieron guardar los datos del usuario. \nError: ${e.localizedMessage}", requireContext())
                         }
                 }
                 .addOnFailureListener {
-                    Toast.makeText(requireContext(), "Error: ${it.localizedMessage}", Toast.LENGTH_SHORT).show()
+                    AlertaHelper.mostrarAlerta("Error de registro", "No se pudo crear el usuario. \nError: ${it.localizedMessage}", requireContext())
                 }
         }
 

@@ -6,16 +6,14 @@ import android.os.Bundle
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.hotelsys.adapters.HabitacionAdapter
 import com.app.hotelsys.api.RetrofitClient
+import com.app.hotelsys.helper.AlertaHelper
 import com.app.hotelsys.models.Habitacion
 import com.app.hotelsys.models.HabitacionResponse
 import com.app.hotelsys.ui.PerfilActivity
@@ -67,7 +65,7 @@ class MainActivityIndex : AppCompatActivity() {
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.nav_micuenta -> {
-                    Toast.makeText(this, "Usuario: $emailUsuario", Toast.LENGTH_SHORT).show()
+                    AlertaHelper.mostrarAlertaToast("Usuario: $emailUsuario", this)
                     true
                 }
                 R.id.nav_logout -> {
@@ -173,10 +171,10 @@ class MainActivityIndex : AppCompatActivity() {
 
         if (lista.any { it.nombre == habitacion.nombre }) {
             lista.removeAll { it.nombre == habitacion.nombre }
-            Toast.makeText(this, "Eliminado de favoritos", Toast.LENGTH_SHORT).show()
+            AlertaHelper.mostrarAlertaToast("Eliminado de favoritos ❤️", this)
         } else {
             lista.add(habitacion)
-            Toast.makeText(this, "Agregado a favoritos ❤️", Toast.LENGTH_SHORT).show()
+            AlertaHelper.mostrarAlertaToast("Agregado a favoritos ❤️", this)
         }
 
         prefs.edit().putString("lista", gson.toJson(lista)).apply()
@@ -199,27 +197,19 @@ class MainActivityIndex : AppCompatActivity() {
                             descripcion = h.imagenes.firstOrNull()?.descripcion ?: "Sin descripción",
                             precio = "S/ ${h.tipoHabitacion.precioBaseNoche} / noche",
                             calificacion = "⭐ ${h.estadoHabitacion.descripcion}",
-                            imagenUrl = "http://10.0.2.2:8081${h.imagenes.firstOrNull()?.url ?: ""}",
+                            imagenUrl = "${BuildConfig.BASE_IP}${h.imagenes.firstOrNull()?.url ?: ""}",
                             fondoResId = 0
                         )
                     }
                     adapter.updateData(listaHabitaciones)
                     tvCantidad.text = "${listaHabitaciones.size} encontradas"
                 } else {
-                    Toast.makeText(
-                        this@MainActivityIndex,
-                        "Error de servidor (${response.code()})",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    AlertaHelper.mostrarAlerta("Error", "No se pudieron cargar las habitaciones. \nCódigo de error: ${response.code()}", this@MainActivityIndex)
                 }
             }
 
             override fun onFailure(call: Call<List<HabitacionResponse>>, t: Throwable) {
-                Toast.makeText(
-                    this@MainActivityIndex,
-                    "Error de conexión: ${t.localizedMessage}",
-                    Toast.LENGTH_LONG
-                ).show()
+                AlertaHelper.mostrarAlerta("Error de conexión", "No se pudo conectar con el servidor. \nError: ${t.localizedMessage}", this@MainActivityIndex)
             }
         })
     }

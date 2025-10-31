@@ -90,17 +90,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="top">
 
                 <ImageView
-                    android:visibility="gone"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:src="@drawable/ic_cart"
                     app:tint="#5A5A5A" />
 
                 <TextView
-                    android:visibility="gone"
                     android:id="@+id/tvProductos"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
