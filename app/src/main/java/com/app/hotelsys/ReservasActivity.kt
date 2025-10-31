@@ -3,18 +3,24 @@ package com.app.hotelsys.ui
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.app.hotelsys.FavoritosActivity
+import com.app.hotelsys.MainActivity
 import com.app.hotelsys.MainActivityIndex
+import com.app.hotelsys.R
 import com.app.hotelsys.adapters.RecyclerViewAdapterReserva
 import com.app.hotelsys.databinding.ActivityRecyclerReservasBinding
 import com.app.hotelsys.helper.AlertaHelper
 import com.app.hotelsys.models.ReservaResponse
 import com.app.hotelsys.retrofit.RetrofitReserva
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.launch
@@ -50,7 +56,7 @@ class ReservasActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Habilita el comportamiento edge-to-edge (dibuja bajo barras de sistema)
-        enableEdgeToEdge()
+//        enableEdgeToEdge()
         // Ajusta padding según insets del sistema para evitar solapamientos
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -77,11 +83,61 @@ class ReservasActivity : AppCompatActivity() {
         binding.recyclerReservas.layoutManager = LinearLayoutManager(this)
         binding.recyclerReservas.adapter = adapter
 
-        // Botón para volver al índice principal (MainActivityIndex)
-        binding.btnVolverIndex.setOnClickListener {
-            startActivity(Intent(this, MainActivityIndex::class.java))
-            finish()
+
+
+        // ====== Menú del toolbar ======
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        val btnMenu = findViewById<ImageButton>(R.id.btnMenu)
+        val usuarioActual = FirebaseAuth.getInstance().currentUser
+        val emailUsuario = usuarioActual?.email ?: "Invitado"
+
+        val popupMenu = PopupMenu(this, btnMenu)
+        popupMenu.menuInflater.inflate(R.menu.menu_toolbar, popupMenu.menu)
+        popupMenu.menu.findItem(R.id.nav_micuenta).title = "Mi cuenta ($emailUsuario)"
+        btnMenu.setOnClickListener { popupMenu.show() }
+
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.nav_micuenta -> {
+                    AlertaHelper.mostrarAlertaToast("Usuario: $emailUsuario", this)
+                    true
+                }
+                R.id.nav_logout -> {
+                    FirebaseAuth.getInstance().signOut()
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
+                    true
+                }
+                else -> false
+            }
         }
+
+        // === Configurar Bottom Navigation ===
+        val bottomNav = binding.bottomNav
+        bottomNav.selectedItemId = R.id.nav_reservas
+
+        bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_habitaciones -> {
+                    startActivity(Intent(this, MainActivityIndex::class.java))
+                    overridePendingTransition(0, 0)
+                    true
+                }
+                R.id.nav_favoritos -> {
+                    startActivity(Intent(this, FavoritosActivity::class.java))
+                    overridePendingTransition(0, 0)
+                    true
+                }
+                R.id.nav_reservas -> true
+                R.id.nav_perfil -> {
+                    startActivity(Intent(this, PerfilActivity::class.java))
+                    overridePendingTransition(0, 0)
+                    true
+                }
+                else -> false
+            }
+        }
+
 
         // Carga las reservas del cliente actual al iniciar la activity
         obtenerReservasCliente()

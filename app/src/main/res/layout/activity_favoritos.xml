@@ -10,7 +10,7 @@
 
     <!-- ===== Toolbar superior ===== -->
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbarFavoritos"
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/hotel_azul"
@@ -49,7 +49,7 @@
             </LinearLayout>
 
             <ImageButton
-                android:id="@+id/btnMenuFavoritos"
+                android:id="@+id/btnMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -92,13 +92,13 @@
 
     <!-- ===== Bottom Navigation ===== -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomFavoritos"
+        android:id="@+id/bottomNav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/hotel_azul"
         app:itemIconTint="@android:color/white"
         app:itemTextColor="@android:color/white"
-        app:menu="@menu/menu_favoritos" />
+        app:menu="@menu/menu_inferior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

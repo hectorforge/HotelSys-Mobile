@@ -23,4 +23,7 @@
     <string name="eliminar_producto">Eliminar producto</string>
     <string name="disminuir_cantidad">Disminuir cantidad</string>
     <string name="continuar">Continuar</string>
+    <string name="impuestos_y_tasas_s_0_00">Impuestos y tasas: S/. 0.00</string>
+    <string name="monto_s_0_00">Monto: S/. 0.00</string>
+    <string name="imagen_de_la_habitaci_n">Imagen de la habitación</string>
 </resources>

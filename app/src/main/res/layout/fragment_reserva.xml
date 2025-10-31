@@ -45,8 +45,7 @@
                 android:layout_weight="1"
                 android:scaleType="centerCrop"
                 android:layout_marginEnd="12dp"
-
-                android:contentDescription="Imagen de la habitación" />
+                android:contentDescription="@string/imagen_de_la_habitaci_n" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -303,7 +302,7 @@
                     android:id="@+id/txtMonto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/numero_de_noches"
+                    android:text="@string/monto_s_0_00"
                     android:textSize="14sp"
                     android:layout_marginTop="8dp" />
 
@@ -311,7 +310,7 @@
                     android:id="@+id/txtImpuesto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Impuestos y tasas: S/. 0.00"
+                    android:text="@string/impuestos_y_tasas_s_0_00"
                     android:textSize="14sp"
                     android:layout_marginTop="4dp" />
 

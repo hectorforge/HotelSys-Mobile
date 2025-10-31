@@ -1,15 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="#E3E7F3"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- ===== Toolbar superior ===== -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/hotel_azul"
+        app:popupTheme="@style/CustomPopupMenu">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:id="@+id/layoutTitulo"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/logoHotel"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/logo"
+                    android:contentDescription="Logo del hotel" />
+
+                <TextView
+                    android:id="@+id/tvTitulo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="HOTEL SYS"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Menú principal"
+                android:src="@drawable/menu_24px"
+                app:tint="@android:color/white"
+                android:padding="8dp" />
+        </RelativeLayout>
+    </com.google.android.material.appbar.MaterialToolbar>
+
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="60dp"-->
+<!--        android:background="#1E3C72"-->
+<!--        android:gravity="center">-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/tvTituloReservas"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Mis Reservas"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textSize="20sp"-->
+<!--            android:textColor="@android:color/white" />-->
+<!--    </LinearLayout>-->
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="#1E3C72"
-        android:gravity="center">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="12dp" >
 
         <TextView
             android:id="@+id/tvTituloReservas"
@@ -18,14 +91,10 @@
             android:text="Mis Reservas"
             android:textStyle="bold"
             android:textSize="20sp"
-            android:textColor="@android:color/white" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+            android:padding="8dp"
+            android:textColor="@android:color/black"
+            android:drawableStart="@drawable/rocket_24px"
+            android:drawablePadding="8dp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerReservas"
@@ -35,15 +104,16 @@
             android:padding="12dp"
             android:clipToPadding="false" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnVolverIndex"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Regresar al Inicio"
-            android:textAllCaps="false"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:backgroundTint="#1E3C72"
-            android:layout_margin="16dp" />
     </LinearLayout>
+
+    <!-- ===== Bottom Navigation ===== -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/hotel_azul"
+        app:itemIconTint="@android:color/white"
+        app:itemTextColor="@android:color/white"
+        app:menu="@menu/menu_inferior" />
 </LinearLayout>

@@ -3,12 +3,21 @@ package com.app.hotelsys.ui
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageButton
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.ViewCompat
+import androidx.core.view.updatePadding
+import com.app.hotelsys.FavoritosActivity
+import com.app.hotelsys.MainActivity
+import com.app.hotelsys.MainActivityIndex
+import com.app.hotelsys.R
 import com.app.hotelsys.databinding.ActivityPerfilBinding
 import com.app.hotelsys.helper.AlertaHelper
 import com.app.hotelsys.models.Usuario
 import com.app.hotelsys.ui.auth.AuthActivity
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -29,17 +38,39 @@ class PerfilActivity : AppCompatActivity() {
         setupToolbar()
         cargarDatosUsuario()
         setupListeners()
+        setupBottomNavigation()
     }
 
     private fun setupToolbar() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowHomeEnabled(true)
-            title = "Mi Perfil"
-        }
-        binding.toolbar.setNavigationOnClickListener {
-            finish()
+        // ====== Menú del toolbar ======
+//        val toolbar = binding.toolbar
+//        ViewCompat.setOnApplyWindowInsetsListener(toolbar) { view, insets ->
+//            val statusBarHeight = insets.getSystemWindowInsetTop()
+//            view.updatePadding(top = statusBarHeight)
+//           insets
+//        }
+
+        val btnMenu = findViewById<ImageButton>(R.id.btnMenu)
+        val usuarioActual = FirebaseAuth.getInstance().currentUser
+        val emailUsuario = usuarioActual?.email ?: "Invitado"
+
+        val popupMenu = PopupMenu(this, btnMenu)
+        popupMenu.menuInflater.inflate(R.menu.menu_toolbar, popupMenu.menu)
+        popupMenu.menu.findItem(R.id.nav_micuenta).title = "Mi cuenta ($emailUsuario)"
+        btnMenu.setOnClickListener { popupMenu.show() }
+
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.nav_micuenta -> {
+                    AlertaHelper.mostrarAlertaToast("Usuario: $emailUsuario", this)
+                    true
+                }
+                R.id.nav_logout -> {
+                    cerrarSesion()
+                    true
+                }
+                else -> false
+            }
         }
     }
 
@@ -47,7 +78,6 @@ class PerfilActivity : AppCompatActivity() {
         val user = auth.currentUser
 
         if (user == null) {
-//        Toast.makeText(this, "No hay usuario autenticado", Toast.LENGTH_SHORT).show()
             AlertaHelper.mostrarAlerta("Sesión expirada", "Por favor, inicia sesión de nuevo.", this)
             irALogin()
             return
@@ -156,5 +186,32 @@ class PerfilActivity : AppCompatActivity() {
     private fun irALogin() {
         startActivity(Intent(this, AuthActivity::class.java))
         finish()
+    }
+
+    private fun setupBottomNavigation() {
+        val bottomNav = binding.bottomNav
+        bottomNav.selectedItemId = R.id.nav_perfil
+
+        bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_habitaciones -> {
+                    startActivity(Intent(this, MainActivityIndex::class.java))
+                    overridePendingTransition(0, 0)
+                    true
+                }
+                R.id.nav_favoritos -> {
+                    startActivity(Intent(this, FavoritosActivity::class.java))
+                    overridePendingTransition(0, 0)
+                    true
+                }
+                R.id.nav_reservas -> {
+                    startActivity(Intent(this, ReservasActivity::class.java))
+                    overridePendingTransition(0, 0)
+                    true
+                }
+                R.id.nav_perfil -> true
+                else -> false
+            }
+        }
     }
 }

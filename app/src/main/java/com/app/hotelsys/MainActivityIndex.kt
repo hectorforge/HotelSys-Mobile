@@ -50,7 +50,7 @@ class MainActivityIndex : AppCompatActivity() {
         tvCantidad = findViewById(R.id.tvCantidadHabitaciones)
 
         // Marcar ítem actual
-        bottomNav.selectedItemId = R.id.nav_buscar
+        bottomNav.selectedItemId = R.id.nav_habitaciones
 
         // ====== Usuario actual ======
         val usuarioActual = FirebaseAuth.getInstance().currentUser
@@ -81,7 +81,7 @@ class MainActivityIndex : AppCompatActivity() {
         // ====== Bottom Navigation ======
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_buscar -> true
+                R.id.nav_habitaciones -> true
                 R.id.nav_favoritos -> {
                     startActivity(Intent(this, FavoritosActivity::class.java))
                     overridePendingTransition(0, 0)
