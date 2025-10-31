@@ -17,4 +17,9 @@
     <string name="resumenReserva">Resumen de la reserva</string>
     <string name="cancelar">Cancelar</string>
     <string name="reservar">Reservar</string>
+    <string name="numero_de_noches">Número de noches:</string>
+    <string name="btn_agregar_producto">Agregar</string>
+    <string name="aumentar_cantidad">Aumentar cantidad</string>
+    <string name="eliminar_producto">Eliminar producto</string>
+    <string name="disminuir_cantidad">Disminuir cantidad</string>
 </resources>

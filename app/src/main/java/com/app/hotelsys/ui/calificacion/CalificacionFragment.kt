@@ -18,19 +18,30 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 
+/**
+ * Fragment que muestra el diálogo de calificaciones y reseñas de una habitación.
+ * Se implementa como un BottomSheetDialogFragment para mostrar el contenido en la parte inferior de la pantalla.
+ */
 class CalificacionFragment : BottomSheetDialogFragment() {
 
+    // View Binding para acceder a las vistas del fragment
     private var _binding: FragmentCalificacionBinding? = null
     private val binding get() = _binding!!
 
+    // Instancias para autenticación y repositorio de calificaciones
     private lateinit var auth: FirebaseAuth
     private val calificacionRepository = CalificacionRepository()
 
+    // Propiedades de la habitación que se está calificando
     private var habitacionId: Int = 0
     private var habitacionNumero: String = ""
     private var habitacionTipo: String = ""
     private var habitacionImagenUrl: String = ""
 
+    /**
+     * Se ejecuta en la creación del fragment para obtener los argumentos pasados
+     * y configurar las propiedades de la habitación
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -41,6 +52,10 @@ class CalificacionFragment : BottomSheetDialogFragment() {
         }
     }
 
+    /**
+     * Configura el comportamiento del BottomSheetDialog
+     * Establece el estado expandido y evita que se colapse
+     */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
         dialog.setOnShowListener {
@@ -55,6 +70,9 @@ class CalificacionFragment : BottomSheetDialogFragment() {
         return dialog
     }
 
+    /**
+     * Infla el layout del fragment usando View Binding
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -63,6 +81,9 @@ class CalificacionFragment : BottomSheetDialogFragment() {
         return binding.root
     }
 
+    /**
+     * Configura la UI y carga los datos iniciales una vez que la vista está creada
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -72,15 +93,18 @@ class CalificacionFragment : BottomSheetDialogFragment() {
         cargarDatosReales()
     }
 
+    /**
+     * Carga los datos de la habitación y sus calificaciones desde el repositorio
+     */
     private fun cargarDatosReales() {
-        // Header básico
+        // Configura el header con la información básica de la habitación
         binding.textViewNombreHabitacionResena.text = "$habitacionTipo N° $habitacionNumero"
         Glide.with(this)
             .load(habitacionImagenUrl)
             .centerCrop()
             .into(binding.imageViewHabitacionResena)
 
-        // Cargar calificaciones reales desde Firebase/Repo
+        // Carga las calificaciones desde Firebase
         calificacionRepository.obtenerCalificacionesPorHabitacion(
             habitacionId = habitacionId,
             onSuccess = { calificaciones ->
@@ -93,6 +117,9 @@ class CalificacionFragment : BottomSheetDialogFragment() {
         )
     }
 
+    /**
+     * Actualiza el header con el promedio de calificaciones y el total de reseñas
+     */
     private fun actualizarHeader(calificaciones: List<CalificacionCalificar>) {
         if (calificaciones.isEmpty()) {
             binding.ratingBarPromedio.rating = 0f
@@ -106,11 +133,17 @@ class CalificacionFragment : BottomSheetDialogFragment() {
         }
     }
 
+    /**
+     * Configura el RecyclerView con la lista de reseñas
+     */
     private fun actualizarListaResenas(calificaciones: List<CalificacionCalificar>) {
         binding.recyclerViewResenas.layoutManager = LinearLayoutManager(context)
         binding.recyclerViewResenas.adapter = ResenaCalificarAdapter(calificaciones)
     }
 
+    /**
+     * Configura el formulario de calificación con los datos del usuario actual
+     */
     private fun setupForm() {
         val nombreUsuarioActual = auth.currentUser?.displayName ?: "Usuario Anónimo"
         binding.editTextNombreUsuario.setText(nombreUsuarioActual)
@@ -120,6 +153,9 @@ class CalificacionFragment : BottomSheetDialogFragment() {
         binding.buttonCancelar.setOnClickListener { dismiss() }
     }
 
+    /**
+     * Valida y envía una nueva calificación al repositorio
+     */
     private fun enviarCalificacion() {
         val currentUser = auth.currentUser
         if (currentUser == null) {
@@ -156,17 +192,27 @@ class CalificacionFragment : BottomSheetDialogFragment() {
         )
     }
 
+    /**
+     * Limpia el binding cuando se destruye la vista
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
+    /**
+     * Objeto companion que define las claves para los argumentos del fragment
+     * y proporciona un método factory para crear nuevas instancias
+     */
     companion object {
         private const val ARG_HABITACION_ID = "habitacion_id"
         private const val ARG_HABITACION_NUMERO = "habitacion_numero"
         private const val ARG_HABITACION_TIPO = "habitacion_tipo"
         private const val ARG_HABITACION_IMAGEN_URL = "habitacion_imagen_url"
 
+        /**
+         * Crea una nueva instancia del fragment con los parámetros necesarios
+         */
         fun newInstance(
             habitacionId: Int,
             habitacionNumero: String,

@@ -1,18 +1,23 @@
 package com.app.hotelsys.ui.reserva
 
+import com.app.hotelsys.R
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.hotelsys.databinding.FragmentReservaBinding
 import com.app.hotelsys.models.ProductoReservaRequest
+import com.app.hotelsys.models.ProductoResponse
 import com.app.hotelsys.models.ReservaRequest
 import com.app.hotelsys.repository.ReservaRepository
 import com.bumptech.glide.Glide
+import com.example.repaso_recycler.adaptador.ProductosReservaAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
@@ -38,6 +43,13 @@ class ReservaFragment : BottomSheetDialogFragment() {
     private val binding get() = _binding!!                      // Acceso seguro al binding (NO null)
     private val repository = ReservaRepository()                // Repositorio para llamadas a API
     private var idCliente: Int = 0                              // ID del cliente obtenido desde backend
+    private lateinit var productosAdapter: ProductosReservaAdapter // Declaración del adaptador
+
+    private var listaProductosDisponibles = listOf<ProductoResponse>() // Guarda la lista completa de productos de la API
+    private var listaProductosSeleccionados = mutableListOf<ProductoReservaRequest>() // Lista de productos seleccionados
+
+
+
 
     // --- Ciclo de vida del fragmento ---
     override fun onCreateView(
@@ -55,6 +67,9 @@ class ReservaFragment : BottomSheetDialogFragment() {
         // Configuración inicial de la vista y eventos
         configurarVista()
         configurarEventos()
+        obtenerProductos()
+        // Inicializar recycler view de productos seleccionados
+        setupProductosReservaRecyclerView()
     }
 
     override fun onDestroyView() {
@@ -62,6 +77,9 @@ class ReservaFragment : BottomSheetDialogFragment() {
         // Evitar fugas de memoria limpiando el binding
         _binding = null
     }
+
+
+
 
     // --- Setup de UI y eventos ---
     private fun configurarVista() {
@@ -84,6 +102,11 @@ class ReservaFragment : BottomSheetDialogFragment() {
         }
         binding.btnCancelar.setOnClickListener {
             dismiss()
+        }
+
+        // Selección de productos para la reserva
+        binding.btnProductoAgregar.setOnClickListener {
+            agregarProductoSeleccionado()
         }
     }
 
@@ -178,6 +201,9 @@ class ReservaFragment : BottomSheetDialogFragment() {
         val fechaInicio = formatter.parse(fechaInicioStr)
         val fechaFin = formatter.parse(fechaFinStr)
 
+        // Asegurarse de no usar `.time` sobre nullables
+        if (fechaInicio == null || fechaFin == null) return 0
+
         val diff = fechaFin.time - fechaInicio.time
         val dias = (diff / (1000 * 60 * 60 * 24)).toInt() + 1  // +1 para incluir ambos días
         return if (dias > 0) dias else 0
@@ -197,10 +223,14 @@ class ReservaFragment : BottomSheetDialogFragment() {
         val precioLimpio = precioString.replace(Regex("[^\\d.]"), "")
         val precioHabitacionDouble = precioLimpio.toDoubleOrNull() ?: 0.0
 
-        val pago = precioHabitacionDouble * dias
+        val precioProductos = listaProductosSeleccionados.sumOf { (it.precioUnitarioGrabado ?: 0.0) * it.cantidad }
+
+        val pago = precioHabitacionDouble * dias + precioProductos
+
         val impuestos = pago * 0.10
         val totalPago = pago + impuestos
 
+        binding.txtCantidadDias.text = "${getString(R.string.numero_de_noches)} $dias"
         binding.txtMonto.text = "Monto: S/ %.2f".format(pago)
         binding.txtImpuesto.text = "Impuestos y tasas: S/ %.2f".format(impuestos)
         binding.txtTotalPago.text = "Total: S/ %.2f".format(totalPago)
@@ -208,16 +238,30 @@ class ReservaFragment : BottomSheetDialogFragment() {
 
     // --- Llamadas a red / repositorio ---
     private fun obtenerProductos() {
-        // Ejemplo de llamada para listar productos, imprime en logs
         viewLifecycleOwner.lifecycleScope.launch {
-            val response = repository.obtenerProductos()
-            if (response.isSuccessful) {
-                val listaProductos = response.body()
-                listaProductos?.forEach {
-                    Log.i("PROD", "Producto: ${it.nombreProducto} - S/.${it.precio}")
+            try {
+                val response = repository.obtenerProductos()
+                if (response.isSuccessful) {
+                    listaProductosDisponibles = response.body() ?: emptyList()
+
+                    val productosDisplay = listaProductosDisponibles.map { producto ->
+                        "${producto.nombreProducto} - S/ ${"%.2f".format(producto.precio)}"
+                    }
+
+                    val arrayAdapter = ArrayAdapter(
+                        requireContext(),
+                        android.R.layout.simple_dropdown_item_1line,
+                        productosDisplay
+                    )
+
+                    binding.comboProducto.setAdapter(arrayAdapter)
+
+                } else {
+                    Log.e("PROD_ERROR", "Error al obtener productos: ${response.code()}")
+                    Toast.makeText(context, "No se pudieron cargar los productos", Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Log.e("PROD", "Error código: ${response.code()}")
+            } catch (e: Exception) {
+                Log.e("PROD_EXCEPTION", "Excepción al obtener productos: ${e.localizedMessage}")
             }
         }
     }
@@ -244,6 +288,13 @@ class ReservaFragment : BottomSheetDialogFragment() {
         val fechaIngreso = binding.editTextIngreso.text.toString()
         val fechaSalida = binding.editTextSalida.text.toString()
 
+        val productosParaBackend = listaProductosSeleccionados.map { producto ->
+            ProductoReservaRequest(
+                productoId = producto.productoId,
+                cantidad = producto.cantidad
+            )
+        }
+
         val reserva = ReservaRequest(
             clienteId = idCliente,
             fechaCheckIn = fechaIngreso,
@@ -251,7 +302,7 @@ class ReservaFragment : BottomSheetDialogFragment() {
             descuento = "0",
             estadoReservaId = 1,
             habitacionIds = listOf(idHabitacion),
-            productos = listOf(ProductoReservaRequest(1, 1))
+            productos = productosParaBackend
         )
 
         val gson = GsonBuilder().setPrettyPrinting().create()
@@ -284,4 +335,81 @@ class ReservaFragment : BottomSheetDialogFragment() {
             }
         }
     }
+
+    // --- RecyclerView de productos seleccionados ---
+
+    private fun setupProductosReservaRecyclerView() {
+        productosAdapter = ProductosReservaAdapter(
+            listaProductosSeleccionados,
+            onDisminuirClick = { producto ->
+                val index = listaProductosSeleccionados.indexOf(producto)
+                if (index != -1) {
+                    if (listaProductosSeleccionados[index].cantidad > 1) {
+                        listaProductosSeleccionados[index].cantidad--
+                        productosAdapter.notifyItemChanged(index)
+                    } else {
+                        listaProductosSeleccionados.removeAt(index)
+                        productosAdapter.notifyItemRemoved(index)
+                    }
+                    calcularPago()
+                }
+            },
+            onAumentarClick = { producto ->
+                val index = listaProductosSeleccionados.indexOf(producto)
+                if (index != -1) {
+                    listaProductosSeleccionados[index].cantidad++
+                    productosAdapter.notifyItemChanged(index)
+                    calcularPago()
+                }
+            },
+            onEliminarClick = { producto ->
+                val index = listaProductosSeleccionados.indexOf(producto)
+                if (index != -1) {
+                    listaProductosSeleccionados.removeAt(index)
+                    productosAdapter.notifyItemRemoved(index)
+                    calcularPago()
+                }
+            }
+        )
+        binding.rvProductosReserva.adapter = productosAdapter
+        binding.rvProductosReserva.layoutManager = LinearLayoutManager(context)
+    }
+
+    private fun agregarProductoSeleccionado() {
+        val textoSeleccionado = binding.comboProducto.text.toString()
+
+        if (textoSeleccionado.isBlank()) {
+            Toast.makeText(context, "Por favor, seleccione un producto", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val productoEncontrado = listaProductosDisponibles.find { producto ->
+            "${producto.nombreProducto} - S/ ${"%.2f".format(producto.precio)}" == textoSeleccionado
+        }
+
+        if (productoEncontrado != null) {
+            val nuevoProductoParaReserva = ProductoReservaRequest(
+                productoId = productoEncontrado.id,
+                cantidad = 1, // Siempre empezamos agregando 1
+                nombreProducto = productoEncontrado.nombreProducto,
+                precioUnitarioGrabado = productoEncontrado.precio
+            )
+
+            listaProductosSeleccionados.add(nuevoProductoParaReserva)
+
+            productosAdapter.notifyItemInserted(listaProductosSeleccionados.size - 1)
+
+            binding.comboProducto.text.clear()
+
+            calcularPago()
+
+            Toast.makeText(context, "${productoEncontrado.nombreProducto} agregado.", Toast.LENGTH_SHORT).show()
+
+        } else {
+            Toast.makeText(context, "Producto no válido. Por favor, seleccione uno de la lista.", Toast.LENGTH_LONG).show()
+        }
+    }
+
 }
+
+
