@@ -2,6 +2,7 @@ package com.app.hotelsys
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
@@ -48,6 +49,9 @@ class MainActivityIndex : AppCompatActivity() {
         recyclerHabitaciones = findViewById(R.id.recyclerHabitaciones)
         etBuscar = findViewById(R.id.etBuscar)
         tvCantidad = findViewById(R.id.tvCantidadHabitaciones)
+
+        // ====== Inicializar FavoritosRepository ======
+        favoritosRepository = FavoritosRepository(this)
 
         // Marcar ítem actual
         bottomNav.selectedItemId = R.id.nav_habitaciones
@@ -102,6 +106,9 @@ class MainActivityIndex : AppCompatActivity() {
         }
 
         // ====== Configurar RecyclerView ======
+        val listaDeFavoritosCompletos = favoritosRepository.obtenerFavoritos()
+        val favoritosIds = listaDeFavoritosCompletos.map { it.idHabitacion }.toSet()
+
         recyclerHabitaciones.layoutManager = LinearLayoutManager(this)
         adapter = HabitacionAdapter(
             listOf(),
@@ -126,7 +133,8 @@ class MainActivityIndex : AppCompatActivity() {
                 dialogo.arguments = bundle
                 dialogo.show(supportFragmentManager, "fragment_reserva")
             },
-            onClickFavorito = { habitacion -> botonFavorito(habitacion) }
+            onClickFavorito = { habitacion -> botonFavorito(habitacion) },
+            favoritosIniciales = favoritosIds
         )
         recyclerHabitaciones.adapter = adapter
 
@@ -160,8 +168,6 @@ class MainActivityIndex : AppCompatActivity() {
             tvCantidad.text = "${filtradas.size} encontradas"
         }
 
-        // ====== Inicializar FavoritosRepository ======
-        favoritosRepository = FavoritosRepository(this)
     }
 
     // ====== Añadir o eliminar favoritos ======

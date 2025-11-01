@@ -35,6 +35,7 @@ class FavoritosActivity : AppCompatActivity() {
         // === Configurar favoritosRepository ===
         favoritosRepository = FavoritosRepository(this)
         val favoritos = favoritosRepository.obtenerFavoritos()
+        val favoritosIds = favoritos.map { it.idHabitacion }.toSet()
 
         if (favoritos.isEmpty()) {
             AlertaHelper.mostrarAlertaToast("No tienes habitaciones favoritas.", this)
@@ -53,6 +54,7 @@ class FavoritosActivity : AppCompatActivity() {
                 AlertaHelper.mostrarAlertaToast("Eliminado de favoritos 💔", this)
                 recreate()
             },
+            favoritosIniciales = favoritosIds,
             mostrarBotones = false
         )
 

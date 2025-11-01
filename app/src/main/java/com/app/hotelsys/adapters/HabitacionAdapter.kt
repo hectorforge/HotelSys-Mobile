@@ -1,6 +1,7 @@
 package com.app.hotelsys.adapters
 
 import android.graphics.PorterDuff
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,10 +25,12 @@ class HabitacionAdapter(
     private val onClickCalificar: (Habitacion, String?, Int) -> Unit, // enviamos posición + imagen
     private val onClickReservar: (Habitacion) -> Unit,
     private val onClickFavorito: (Habitacion) -> Unit,
+    private val favoritosIniciales: Set<Int>,
     private val mostrarBotones: Boolean = true
 ) : RecyclerView.Adapter<HabitacionAdapter.HabitacionViewHolder>() {
 
-    private val favoritos = mutableSetOf<Int>() // posiciones favoritas
+
+    private val favoritos = favoritosIniciales.toMutableSet()
     private val calificacionRepository = CalificacionRepository()
 
     inner class HabitacionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -131,12 +134,13 @@ class HabitacionAdapter(
         holder.btnReservar.setOnClickListener { onClickReservar(habitacion) }
 
         // Favoritos
-        val esFavorito = favoritos.contains(position)
+        val esFavorito = favoritos.contains(habitacion.idHabitacion)
+
         actualizarIconoFavorito(holder, esFavorito)
 
         holder.btnFavorito.setOnClickListener {
-            if (esFavorito) favoritos.remove(position)
-            else favoritos.add(position)
+            if (esFavorito) favoritos.remove(habitacion.idHabitacion)
+            else favoritos.add(habitacion.idHabitacion)
 
             onClickFavorito(habitacion)
             notifyItemChanged(position)
