@@ -17,4 +17,13 @@
     <string name="resumenReserva">Resumen de la reserva</string>
     <string name="cancelar">Cancelar</string>
     <string name="reservar">Reservar</string>
+    <string name="numero_de_noches">Número de noches:</string>
+    <string name="btn_agregar_producto">Agregar</string>
+    <string name="aumentar_cantidad">Aumentar cantidad</string>
+    <string name="eliminar_producto">Eliminar producto</string>
+    <string name="disminuir_cantidad">Disminuir cantidad</string>
+    <string name="continuar">Continuar</string>
+    <string name="impuestos_y_tasas_s_0_00">Impuestos y tasas: S/. 0.00</string>
+    <string name="monto_s_0_00">Monto: S/. 0.00</string>
+    <string name="imagen_de_la_habitaci_n">Imagen de la habitación</string>
 </resources>

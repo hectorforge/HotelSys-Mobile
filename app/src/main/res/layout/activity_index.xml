@@ -124,6 +124,6 @@
         android:background="@color/hotel_azul"
         app:itemIconTint="@android:color/white"
         app:itemTextColor="@android:color/white"
-        app:menu="@menu/menu_botoom" />
+        app:menu="@menu/menu_inferior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

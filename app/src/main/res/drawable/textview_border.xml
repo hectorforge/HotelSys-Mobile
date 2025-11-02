@@ -1,0 +1,20 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <!-- Fondo -->
+    <solid android:color="@android:color/transparent" />
+
+    <!-- Borde -->
+    <stroke
+        android:width="2dp"
+        android:color="@color/hotel_azul_oscuro" />
+
+    <!-- Esquinas redondeadas -->
+    <corners android:radius="8dp" />
+
+    <!-- Padding interno del shape (opcional) -->
+    <padding
+        android:left="8dp"
+        android:top="4dp"
+        android:right="8dp"
+        android:bottom="4dp" />
+</shape>

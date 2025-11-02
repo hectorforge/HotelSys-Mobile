@@ -1,6 +1,7 @@
 package com.app.hotelsys.adapters
 
 import android.graphics.PorterDuff
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,16 +17,20 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import android.widget.LinearLayout
 import android.widget.RatingBar
+import com.app.hotelsys.BuildConfig
 import com.app.hotelsys.repository.CalificacionRepository
 
 class HabitacionAdapter(
     var listaHabitaciones: List<Habitacion>,
     private val onClickCalificar: (Habitacion, String?, Int) -> Unit, // enviamos posición + imagen
     private val onClickReservar: (Habitacion) -> Unit,
-    private val onClickFavorito: (Habitacion) -> Unit
+    private val onClickFavorito: (Habitacion) -> Unit,
+    private val favoritosIniciales: Set<Int>,
+    private val mostrarBotones: Boolean = true
 ) : RecyclerView.Adapter<HabitacionAdapter.HabitacionViewHolder>() {
 
-    private val favoritos = mutableSetOf<Int>() // posiciones favoritas
+
+    private val favoritos = favoritosIniciales.toMutableSet()
     private val calificacionRepository = CalificacionRepository()
 
     inner class HabitacionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -39,6 +44,7 @@ class HabitacionAdapter(
         val btnCalificar: Button = itemView.findViewById(R.id.btnCalificar)
         val btnReservar: Button = itemView.findViewById(R.id.btnReservar)
         val btnFavorito: ImageButton = itemView.findViewById(R.id.btnFavorito)
+        val llBotones: LinearLayout = itemView.findViewById(R.id.ll_botones)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitacionViewHolder {
@@ -92,7 +98,7 @@ class HabitacionAdapter(
 
         // Construir URL de imagen si existe
         val imagenUrlCompleta = habitacion.imagenUrl?.takeIf { it.isNotBlank() }?.let {
-            if (it.startsWith("http")) it else "http://10.0.2.2:8081/api/$it"
+            if (it.startsWith("http")) it else "${BuildConfig.BASE_IP}/api/$it"
         }
 
         // --- Construye imagen de carga ---
@@ -111,6 +117,13 @@ class HabitacionAdapter(
             .centerCrop()
             .into(holder.imgHabitacion)
 
+        // Mostrar u ocultar botones
+        if (mostrarBotones) {
+            holder.llBotones.visibility = View.VISIBLE
+        } else {
+            holder.llBotones.visibility = View.GONE
+        }
+
         // Botón Calificar → enviamos posición + imagen
         holder.btnCalificar.setOnClickListener {
             val imagenParaEnviar = imagenUrlCompleta ?: habitacion.fondoResId.toString()
@@ -121,12 +134,13 @@ class HabitacionAdapter(
         holder.btnReservar.setOnClickListener { onClickReservar(habitacion) }
 
         // Favoritos
-        val esFavorito = favoritos.contains(position)
+        val esFavorito = favoritos.contains(habitacion.idHabitacion)
+
         actualizarIconoFavorito(holder, esFavorito)
 
         holder.btnFavorito.setOnClickListener {
-            if (esFavorito) favoritos.remove(position)
-            else favoritos.add(position)
+            if (esFavorito) favoritos.remove(habitacion.idHabitacion)
+            else favoritos.add(habitacion.idHabitacion)
 
             onClickFavorito(habitacion)
             notifyItemChanged(position)

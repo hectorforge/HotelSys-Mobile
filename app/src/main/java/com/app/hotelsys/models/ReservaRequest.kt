@@ -9,8 +9,3 @@ data class ReservaRequest(
     val habitacionIds: List<Int>,
     val productos: List<ProductoReservaRequest>
 )
-
-data class ProductoReservaRequest(
-    val productoId: Int,
-    val cantidad: Int
-)

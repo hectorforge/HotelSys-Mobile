@@ -19,55 +19,26 @@ import kotlinx.coroutines.launch
 
 class ReservasActivity : AppCompatActivity() {
 
-    // === Binding y componentes UI ===
     private lateinit var binding: ActivityRecyclerReservasBinding
     private lateinit var adapter: RecyclerViewAdapterReserva
-
-    // === Datos y estado ===
     private val reservasList = mutableListOf<ReservaResponse>()
-
-    // === Dependencias externas ===
     private lateinit var auth: FirebaseAuth
 
-    // === Lifecycle: Configuración inicial de la actividad ===
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Configurar binding y layout
         binding = ActivityRecyclerReservasBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Configurar comportamiento de pantalla completa
-        configurarEdgeToEdge()
-
-        // Inicializar dependencias
-        inicializarDependencias()
-
-        // Configurar componentes UI
-        configurarRecyclerView()
-        configurarListeners()
-
-        // Cargar datos iniciales
-        obtenerReservasCliente()
-    }
-
-    // === Setup: Configurar pantalla completa y márgenes del sistema ===
-    private fun configurarEdgeToEdge() {
         enableEdgeToEdge()
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-    }
 
-    // === Setup: Inicializar Firebase Auth ===
-    private fun inicializarDependencias() {
         auth = FirebaseAuth.getInstance()
-    }
 
-    // === Setup: Configurar RecyclerView con adaptador y layout ===
-    private fun configurarRecyclerView() {
         adapter = RecyclerViewAdapterReserva()
         adapter.RecyclerViewAdapterReserva(
             this,
@@ -79,17 +50,15 @@ class ReservasActivity : AppCompatActivity() {
         binding.recyclerReservas.setHasFixedSize(true)
         binding.recyclerReservas.layoutManager = LinearLayoutManager(this)
         binding.recyclerReservas.adapter = adapter
-    }
 
-    // === Setup: Configurar listeners de botones ===
-    private fun configurarListeners() {
-        binding.btnVolverIndex.setOnClickListener {
+        /*binding.btnVolverIndex.setOnClickListener {
             startActivity(Intent(this, MainActivityIndex::class.java))
             finish()
-        }
+        }*/
+
+        obtenerReservasCliente()
     }
 
-    // === Red: Obtener reservas del cliente autenticado desde API ===
     private fun obtenerReservasCliente() {
         val email = auth.currentUser?.email ?: return
 
@@ -117,7 +86,6 @@ class ReservasActivity : AppCompatActivity() {
         }
     }
 
-    // === Lifecycle: Limpieza al destruir actividad ===
     override fun onDestroy() {
         super.onDestroy()
     }

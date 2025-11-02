@@ -45,8 +45,7 @@
                 android:layout_weight="1"
                 android:scaleType="centerCrop"
                 android:layout_marginEnd="12dp"
-
-                android:contentDescription="Imagen de la habitación" />
+                android:contentDescription="@string/imagen_de_la_habitaci_n" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -97,7 +96,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/fechaEntrada"
-                app:startIconDrawable="@drawable/ic_calendar_today">
+                app:startIconDrawable="@drawable/ic_calendar_today"
+                android:id="@+id/til_text_ingreso">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextIngreso"
@@ -118,7 +118,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/fechaSalida"
-                app:startIconDrawable="@drawable/ic_calendar_today">
+                app:startIconDrawable="@drawable/ic_calendar_today"
+                android:id="@+id/til_text_salida" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextSalida"
@@ -137,7 +138,9 @@
             android:layout_height="wrap_content"
             android:hint="@string/numeroHuespedes"
             app:startIconDrawable="@drawable/outline_bed_24"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:id="@+id/til_Huespedes"
+            >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtHuespedes"
@@ -146,7 +149,7 @@
                 android:inputType="number" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!--<TextView
+        <TextView
             android:id="@+id/textView10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -155,22 +158,56 @@
             android:layout_marginTop="24dp"
             android:textColor="#1E3C72" />
 
+<!--        PRODUCTOS ADICIONALES-->
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="16dp"
+                android:hint="Seleccione un producto"
+                app:layout_constraintEnd_toStartOf="@+id/btn_producto_agregar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:startIconDrawable="@drawable/outline_box_24">
+
+                <AutoCompleteTextView
+                    android:id="@+id/comboProducto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="none"
+                    android:padding="12dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/btn_producto_agregar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_agregar_producto"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textColor="@android:color/white"
+                app:cornerRadius="8dp"
+                app:backgroundTint="#1E3C72"
+                android:paddingVertical="10dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_productos_reserva"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Seleccione un producto"
-            app:startIconDrawable="@drawable/outline_box_24">
+            android:nestedScrollingEnabled="false"
+            android:layout_marginTop="4dp"
+            tools:listitem="@layout/item_producto_reserva"
+            tools:itemCount="3" />
 
-            <AutoCompleteTextView
-                android:id="@+id/comboProducto"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="none"
-                android:padding="12dp" />
-        </com.google.android.material.textfield.TextInputLayout>-->
+
 
 
         <!-- INFORMACIÓN DEL USUARIO -->
@@ -254,10 +291,18 @@
                     android:textColor="#1E3C72" />
 
                 <TextView
+                    android:id="@+id/txtCantidadDias"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textSize="14sp"
+                    tools:text="Número de noches" />
+
+                <TextView
                     android:id="@+id/txtMonto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Monto: S/ 250.00"
+                    android:text="@string/monto_s_0_00"
                     android:textSize="14sp"
                     android:layout_marginTop="8dp" />
 
@@ -265,7 +310,7 @@
                     android:id="@+id/txtImpuesto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Impuestos y tasas: S/ 25.00"
+                    android:text="@string/impuestos_y_tasas_s_0_00"
                     android:textSize="14sp"
                     android:layout_marginTop="4dp" />
 
@@ -279,7 +324,7 @@
                     android:id="@+id/txtTotalPago"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Total: S/ 275.00"
+                    android:text="Total: S/. 0.00"
                     android:textStyle="bold"
                     android:textColor="#1E3C72"
                     android:textSize="15sp" />

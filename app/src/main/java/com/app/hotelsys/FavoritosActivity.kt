@@ -15,31 +15,20 @@ import com.google.gson.reflect.TypeToken
 
 class FavoritosActivity : AppCompatActivity() {
 
-    // === Lifecycle: Configuración inicial de la actividad ===
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_favoritos)
 
-        // Configurar lista de favoritos
-        configurarRecyclerViewFavoritos()
-
-        // Configurar navegación inferior
-        configurarBottomNavigation()
-    }
-
-    // === Setup: Configurar RecyclerView con habitaciones favoritas ===
-    private fun configurarRecyclerViewFavoritos() {
+        // === Configurar RecyclerView ===
         val recycler = findViewById<RecyclerView>(R.id.recyclerFavoritos)
         recycler.layoutManager = LinearLayoutManager(this)
 
         val favoritos = obtenerFavoritos()
 
-        // Mostrar mensaje si no hay favoritos
         if (favoritos.isEmpty()) {
             Toast.makeText(this, "No tienes habitaciones favoritas.", Toast.LENGTH_SHORT).show()
         }
 
-        // Configurar adaptador con callbacks para acciones
         recycler.adapter = HabitacionAdapter(
             favoritos,
             onClickCalificar = { habitacion, imagen, position ->
@@ -53,10 +42,8 @@ class FavoritosActivity : AppCompatActivity() {
                 recreate()
             }
         )
-    }
 
-    // === Setup: Configurar navegación inferior con acciones ===
-    private fun configurarBottomNavigation() {
+        // === Configurar Bottom Navigation ===
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomFavoritos)
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
@@ -74,7 +61,7 @@ class FavoritosActivity : AppCompatActivity() {
         }
     }
 
-    // === Storage: Obtener lista de habitaciones favoritas desde SharedPreferences ===
+    // === Obtener favoritos guardados ===
     private fun obtenerFavoritos(): MutableList<Habitacion> {
         val prefs = getSharedPreferences("favoritos", Context.MODE_PRIVATE)
         val gson = Gson()
@@ -83,7 +70,7 @@ class FavoritosActivity : AppCompatActivity() {
         return gson.fromJson(json, type)
     }
 
-    // === Storage: Eliminar habitación de favoritos y actualizar SharedPreferences ===
+    // === Eliminar habitación de favoritos ===
     private fun eliminarFavorito(habitacion: Habitacion) {
         val prefs = getSharedPreferences("favoritos", Context.MODE_PRIVATE)
         val gson = Gson()
